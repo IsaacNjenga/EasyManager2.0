@@ -116,8 +116,11 @@ function SalesContent() {
     {
       title: "Price",
       dataIndex: "price",
-      key: "price",render: (text) => `KSh. ${Number(text || 0).toFixed(2).toLocaleString()}`
-
+      key: "price",
+      render: (text) =>
+        `KSh. ${Number(text || 0)
+          .toFixed(2)
+          .toLocaleString()}`,
     },
     {
       title: "Quantity",
@@ -127,14 +130,20 @@ function SalesContent() {
     {
       title: "Total",
       dataIndex: "total",
-      key: "total",render: (text) => `KSh. ${Number(text || 0).toFixed(2).toLocaleString()}`
-
+      key: "total",
+      render: (text) =>
+        `KSh. ${Number(text || 0)
+          .toFixed(2)
+          .toLocaleString()}`,
     },
     {
       title: "Commission",
       dataIndex: "commission",
-      key: "commission",render: (text) => `KSh. ${Number(text || 0).toFixed(2).toLocaleString()}`
-
+      key: "commission",
+      render: (text) =>
+        `KSh. ${Number(text || 0)
+          .toFixed(2)
+          .toLocaleString()}`,
     },
     {
       title: "Sold By",
@@ -204,7 +213,7 @@ function SalesContent() {
   };
 
   const handleDeleteCancel = () => {
-    message.error("Canceled");
+    message.error("Cancelled");
     setOpenDelete(null);
   };
 
@@ -216,11 +225,9 @@ function SalesContent() {
         dataSource={SalesData}
       />
       <div style={{ padding: "0px" }}>
-        <h2>Sales Transactions</h2>
-
         {searchValue === "" && (
           <>
-            {" "}
+            <h2>Sales</h2>{" "}
             {groupedSalesByDateSorted.map((date) => (
               <div key={date} style={{ marginBottom: "30px" }}>
                 <h3
