@@ -1,4 +1,6 @@
 import {
+  AndroidFilled,
+  AppleFilled,
   CreditCardOutlined,
   DollarCircleOutlined,
   EyeOutlined,
@@ -17,8 +19,9 @@ import {
   Button,
   Table,
   Menu,
+  Tabs,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 //import CountUp from "react-countup";
 import { Empty } from "antd";
 import { format } from "date-fns";
@@ -26,6 +29,7 @@ import { ExpensesData } from "../../assets/data/expensesData";
 import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { getDashboardData } from "./dateLogic";
+import TabPane from "antd/es/tabs/TabPane";
 function DashboardContent() {
   const currentDateTime = new Date();
   const [day, setDay] = useState(null);
@@ -34,17 +38,65 @@ function DashboardContent() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
-  // const [selectedPeriod, setSelectedPeriod] = useState("today");
+  const [selectedPeriod, setSelectedPeriod] = useState("today");
   const [selectedRevenue, setSelectedRevenue] = useState("today");
   const [selectedProfit, setSelectedProfit] = useState("today");
   const [selectedExpense, setSelectedExpense] = useState("today");
   const [selectedCommission, setSelectedCommission] = useState("today");
   const [current, setCurrent] = useState(1);
+  const [filteredSales, setFilteredSales] = useState([]);
+  const [filteredExpenses, setFilteredExpenses] = useState([]);
+
   const dashboardData = getDashboardData({ sales, expensesData, day });
 
   // const formatter = (value) => (
   //   <CountUp start={0} end={value} duration={1} separator="," />
   // );
+
+  useEffect(() => {
+    const filterByDateRange = (data, dateKey, days) => {
+      const endDate = new Date();
+      endDate.setHours(23, 59, 59, 999);
+
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - days);
+      startDate.setHours(0, 0, 0, 0);
+
+      return data.filter((item) => {
+        const itemDate = new Date(item[dateKey]);
+        itemDate.setHours(0, 0, 0, 0);
+        return itemDate >= startDate && itemDate <= endDate;
+      });
+    };
+
+    let filteredSalesData = [];
+    let filteredExpensesData = [];
+
+    switch (selectedPeriod) {
+      case "today":
+        filteredSalesData = filterByDateRange(sales, "datesold", 0);
+        filteredExpensesData = filterByDateRange(expensesData, "date", 0);
+        break;
+      case "yesterday":
+        filteredSalesData = filterByDateRange(sales, "datesold", 1);
+        filteredExpensesData = filterByDateRange(expensesData, "date", 1);
+        break;
+      case "lastWeek":
+        filteredSalesData = filterByDateRange(sales, "datesold", 7);
+        filteredExpensesData = filterByDateRange(expensesData, "date", 7);
+        break;
+      case "lastMonth":
+        filteredSalesData = filterByDateRange(sales, "datesold", 30);
+        filteredExpensesData = filterByDateRange(expensesData, "date", 30);
+        break;
+      default:
+        filteredSalesData = filterByDateRange(sales, "datesold", 0);
+        filteredExpensesData = filterByDateRange(expensesData, "date", 0);
+    }
+
+    setFilteredSales(filteredSalesData);
+    setFilteredExpenses(filteredExpensesData);
+  }, [selectedPeriod, sales, expensesData]); // Runs only when selectedPeriod or sales change
 
   const lastMonthStarting = new Date();
   lastMonthStarting.setDate(lastMonthStarting.getDate() - 30);
@@ -186,6 +238,12 @@ function DashboardContent() {
       key: "saleperson",
     },
     {
+      title: "Date",
+      dataIndex: "datesold",
+      key: "datesold",
+      render: (text) => format(new Date(text), "dd/MM/yyyy"),
+    },
+    {
       title: "",
       key: "action",
       render: (_, record) => (
@@ -299,58 +357,140 @@ function DashboardContent() {
   const profitDisplay = () =>
     profitMap[selectedProfit] ?? dashboardData.profitToday;
 
+  const SalesContent = ({ filteredSales, selectedPeriod }) => {
+    return (
+      <>
+        <h3>
+          {selectedPeriod === "lastWeek"
+            ? `${format(new Date(lastWeekStarting), "dd/MM/yyyy")} - ${format(
+                new Date(lastWeekEnding),
+                "dd/MM/yyyy"
+              )}`
+            : selectedPeriod === "lastMonth"
+            ? `${format(new Date(lastMonthStarting), "dd/MM/yyyy")} - ${format(
+                new Date(lastMonthEnding),
+                "dd/MM/yyyy"
+              )}`
+            : selectedPeriod === "yesterday"
+            ? `${format(new Date(dateYesterday), "EEEE, do MMMM yyyy")}`
+            : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
+        </h3>
+        <Table dataSource={filteredSales} columns={columns} pagination={true} />
+      </>
+    );
+  };
+
+  const ExpensesContent = ({ filteredExpenses, selectedPeriod }) => {
+    return (
+      <>
+        <h3>
+          {selectedPeriod === "lastWeek"
+            ? `${format(new Date(lastWeekStarting), "dd/MM/yyyy")} - ${format(
+                new Date(lastWeekEnding),
+                "dd/MM/yyyy"
+              )}`
+            : selectedPeriod === "lastMonth"
+            ? `${format(new Date(lastMonthStarting), "dd/MM/yyyy")} - ${format(
+                new Date(lastMonthEnding),
+                "dd/MM/yyyy"
+              )}`
+            : selectedPeriod === "yesterday"
+            ? `${format(new Date(dateYesterday), "EEEE, do MMMM yyyy")}`
+            : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
+        </h3>
+        <Table
+          dataSource={filteredExpenses}
+          columns={expenseColumns}
+          pagination={true}
+        />
+      </>
+    );
+  };
+
   const items = [
     {
-      label: <strong>Sales Today</strong>,
+      label: (
+        <strong>
+          Sales{" "}
+          {selectedPeriod === "lastWeek"
+            ? "for the last 7 days"
+            : selectedPeriod === "lastMonth"
+            ? "for the last 30 days"
+            : selectedPeriod}
+        </strong>
+      ),
       key: "1",
-      content: (sales, expensesData) => (
-        <>
-          <h3 style={{ textAlign: "center", color: "#00152a" }}>Sales Today</h3>
-          {sales.length > 0 ? (
-            <Table dataSource={sales} columns={columns} pagination={true} />
-          ) : (
-            <Empty />
-          )}
-        </>
+      content: (selectedPeriod, filteredSales) => (
+        <SalesContent
+          filteredSales={filteredSales}
+          selectedPeriod={selectedPeriod}
+        />
       ),
     },
     {
-      label: <strong>Expenses Today</strong>,
+      label: (
+        <strong>
+          Expenses{" "}
+          {selectedPeriod === "lastWeek"
+            ? "for the last 7 days"
+            : selectedPeriod === "lastMonth"
+            ? "for the last 30 days"
+            : selectedPeriod}
+        </strong>
+      ),
       key: "2",
-      content: (sales, expensesData) => (
-        <>
-          <h3 style={{ textAlign: "center", color: "#00152a" }}>
-            Expenses Today
-          </h3>
-          {expensesData.length > 0 ? (
-            <Table
-              dataSource={expensesData}
-              columns={expenseColumns}
-              pagination={true}
-            />
-          ) : (
-            <Empty />
-          )}
-        </>
+      content: (selectedPeriod, filteredExpenses) => (
+        <ExpensesContent
+          filteredExpenses={filteredExpenses}
+          selectedPeriod={selectedPeriod}
+        />
       ),
     },
     {
-      label: <strong>Reports Today</strong>,
+      label: (
+        <strong>
+          Reports{" "}
+          {selectedPeriod === "lastWeek"
+            ? "for the last 7 days"
+            : selectedPeriod === "lastMonth"
+            ? "for the last 30 days"
+            : selectedPeriod}
+        </strong>
+      ),
       key: "3",
-      content: (
-        <h3 style={{ textAlign: "center", color: "#00152a" }}>Reports</h3>
+      content: (selectedPeriod) => (
+        <>
+          {/* <h3>{format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}</h3> */}
+          <div style={{ margin: "30px auto" }}>
+            <Empty />
+          </div>
+        </>
       ),
     },
   ];
 
-  const [currentContent, setCurrentContent] = useState(items[0].content(sales));
+  const [currentContent, setCurrentContent] = useState(() =>
+    items[0].content()
+  );
+
+  useEffect(() => {
+    const selectedItem = items.find((item) => item.key === current);
+    if (selectedItem) {
+      setCurrentContent(
+        typeof selectedItem.content === "function"
+          ? selectedItem.content(filteredSales, filteredExpenses)
+          : selectedItem.content
+      );
+    }
+  }, [filteredSales, selectedPeriod, filteredExpenses]);
+
   const onMenuClick = (e) => {
     setCurrent(e.key);
     const selectedItem = items.find((item) => item.key === e.key);
     if (selectedItem) {
       setCurrentContent(
         typeof selectedItem.content === "function"
-          ? selectedItem.content(sales, expensesData)
+          ? selectedItem.content(filteredSales, filteredExpenses)
           : selectedItem.content
       );
     }
@@ -379,6 +519,7 @@ function DashboardContent() {
               setSelectedExpense("lastMonth");
               setSelectedProfit("lastMonth");
               setSelectedCommission("lastMonth");
+              setSelectedPeriod("lastMonth");
             }}
           >
             Last 30 days
@@ -400,6 +541,7 @@ function DashboardContent() {
               setSelectedExpense("lastWeek");
               setSelectedProfit("lastWeek");
               setSelectedCommission("lastWeek");
+              setSelectedPeriod("lastWeek");
             }}
           >
             Last 7 days
@@ -418,6 +560,7 @@ function DashboardContent() {
               setSelectedExpense("yesterday");
               setSelectedProfit("yesterday");
               setSelectedCommission("yesterday");
+              setSelectedPeriod("yesterday");
             }}
           >
             Yesterday
@@ -437,6 +580,7 @@ function DashboardContent() {
               setSelectedExpense("today");
               setSelectedProfit("today");
               setSelectedCommission("today");
+              setSelectedPeriod("today");
             }}
           >
             Today
@@ -562,8 +706,16 @@ function DashboardContent() {
           </Col>
         </Row>
       </div>
-
-      <div>
+      {/* <SalesContent
+        filteredSales={filteredSales}
+        selectedPeriod={selectedPeriod}
+      />
+      <p>Expenses</p>
+      <ExpensesContent
+        filteredExpenses={filteredExpenses}
+        selectedPeriod={selectedPeriod}
+      /> */}
+      {/* <div>
         <Menu
           onClick={onMenuClick}
           selectedKeys={[current]}
@@ -572,29 +724,20 @@ function DashboardContent() {
         />
       </div>
 
-      <div>{currentContent}</div>
+      <div>{currentContent}</div> */}
+      <Tabs
+        defaultActiveKey="1"
+        items={items.map((item) => ({
+          key: item.key,
+          label: item.label,
+          children: item.content(
+            selectedPeriod,
+            item.key === "1" ? filteredSales : filteredExpenses
+          ),
+        }))}
+      />
 
       <div>
-        {/* <h3 style={{ textAlign: "center", color: "#00152a" }}>{currentMenu}</h3>
-        {sales ? (
-          <Table dataSource={sales} columns={columns} pagination={true} />
-        ) : (
-          <Empty />
-        )}
-
-        <h3 style={{ textAlign: "center", color: "#00152a" }}>
-          Expenses Today
-        </h3>
-        {expensesData ? (
-          <Table
-            dataSource={expensesData}
-            columns={expenseColumns}
-            pagination={true}
-          />
-        ) : (
-          <Empty />
-        )} */}
-
         <SalesModal
           openModal={openModal}
           setOpenModal={setOpenModal}

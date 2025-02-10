@@ -52,7 +52,7 @@ export const SalesData = [
     price: 5000,
     quantity: 3,
     total: 15000,
-    datesold: "2025-02-10T12:17:03Z",
+    datesold: "2025-02-09T12:17:03Z",
     saleperson: "PERIS ",
     commission: 150,
     image:

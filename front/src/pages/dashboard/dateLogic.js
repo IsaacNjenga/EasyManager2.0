@@ -15,6 +15,7 @@ export function getDashboardData({ sales, expensesData, day }) {
     });
   };
 
+  //filter random date
   const filterSelectedDateDate = (data, dateKey, selectedDate) => {
     if (!selectedDate) return [];
 
