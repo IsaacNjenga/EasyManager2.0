@@ -19,7 +19,7 @@ import {
   Tabs,
 } from "antd";
 import React, { useEffect, useState } from "react";
-//import CountUp from "react-countup";
+import CountUp from "react-countup";
 import { Empty } from "antd";
 import { format } from "date-fns";
 import { ExpensesData } from "../../assets/data/expensesData";
@@ -44,10 +44,15 @@ function DashboardContent() {
 
   const dashboardData = getDashboardData({ sales, expensesData, day });
 
-  // const formatter = (value) => (
-  //   <CountUp start={0} end={value} duration={1} separator="," />
-  // );
+  const formatter = (value) => {
+    const numericValue = Number(value.replace(/KSh\.|\s|,/g, "").trim());
 
+    return (
+      <span>
+        KSh. <CountUp start={0} end={numericValue} duration={1} separator="," />
+      </span>
+    );
+  };
   useEffect(() => {
     const filterByDateRange = (data, dateKey, days) => {
       const endDate = new Date();
@@ -594,7 +599,7 @@ function DashboardContent() {
                 precision={2}
                 valueStyle={{ color: "#00152a" }}
                 //prefix={<DollarCircleOutlined style={iconStyle} />}
-                //formatter={formatter}
+                formatter={formatter}
               />
             </Card>
           </Col>
@@ -620,6 +625,7 @@ function DashboardContent() {
                 value={`KSh.${expensesDisplay().toLocaleString()}`}
                 precision={2}
                 valueStyle={{ color: "#fc0100" }}
+                formatter={formatter}
                 // prefix={<CreditCardOutlined style={iconStyle} />}
               />
             </Card>
@@ -646,6 +652,7 @@ function DashboardContent() {
                 value={`KSh.${commissionsDisplay().toLocaleString()}`}
                 precision={2}
                 valueStyle={{ color: "orange" }}
+                formatter={formatter}
                 // prefix={<UserDeleteOutlined style={iconStyle} />}
                 // formatter={formatter}
               />
@@ -673,6 +680,7 @@ function DashboardContent() {
                 value={`KSh.${profitDisplay().toLocaleString()}`}
                 precision={2}
                 valueStyle={{ color: "#008001" }}
+                formatter={formatter}
                 //prefix={<RiseOutlined style={iconStyle} />}
                 // formatter={formatter}
               />
