@@ -11,7 +11,7 @@ function SalesContent() {
   const [modalContent, setModalContent] = useState(null);
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [error, setError] = useState("");
+  //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
   const totalAmount = SalesData.reduce(
@@ -244,7 +244,7 @@ function SalesContent() {
                   columns={columns}
                   dataSource={groupedSalesByDate[date]}
                   pagination={false}
-                  rowKey="code"
+                  rowKey="_id"
                   summary={() => (
                     <Table.Summary.Row>
                       <Table.Summary.Cell

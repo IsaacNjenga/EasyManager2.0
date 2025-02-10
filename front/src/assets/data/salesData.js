@@ -230,7 +230,7 @@ export const SalesData = [
     __v: 0,
   },
   {
-    _id: "6787d55b7bdd79fb1c8da248",
+    _id: "6787d55b7bdd79fb1c8da258",
     number: "586",
     description: "ONE-DOOR METAL SAFE (420)",
     price: 35000,

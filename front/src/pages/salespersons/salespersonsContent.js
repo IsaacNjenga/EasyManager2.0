@@ -5,7 +5,6 @@ import { SalesData } from "../../assets/data/salesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 function SalespersonsContent() {
-  const [modalContent, setModalContent] = useState(null);
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -28,7 +27,6 @@ function SalespersonsContent() {
     amountSold:
       salesBySalesperson[person.firstname]?.amountSold.toLocaleString() || "0", // Format currency
   }));
-  console.log(enhancedSalespersonsData);
 
   const totalSalesMade = enhancedSalespersonsData
     .reduce((acc, sale) => acc + sale.salesMade, 0)

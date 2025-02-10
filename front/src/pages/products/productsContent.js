@@ -11,7 +11,7 @@ function ProductsContent() {
   const [modalContent, setModalContent] = useState(null);
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [error, setError] = useState("");
+  //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
   const groupedProductsByCode = ProductData.reduce((acc, product) => {
@@ -202,6 +202,7 @@ function ProductsContent() {
             <Table
               columns={columns}
               dataSource={updatedProductData}
+              rowKey="_id"
               pagination={true}
             />
           </>

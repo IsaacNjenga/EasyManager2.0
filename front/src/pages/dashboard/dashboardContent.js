@@ -1,6 +1,4 @@
 import {
-  AndroidFilled,
-  AppleFilled,
   CreditCardOutlined,
   DollarCircleOutlined,
   EyeOutlined,
@@ -18,7 +16,6 @@ import {
   Image,
   Button,
   Table,
-  Menu,
   Tabs,
 } from "antd";
 import React, { useEffect, useState } from "react";
@@ -29,7 +26,6 @@ import { ExpensesData } from "../../assets/data/expensesData";
 import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { getDashboardData } from "./dateLogic";
-import TabPane from "antd/es/tabs/TabPane";
 function DashboardContent() {
   const currentDateTime = new Date();
   const [day, setDay] = useState(null);
@@ -43,7 +39,6 @@ function DashboardContent() {
   const [selectedProfit, setSelectedProfit] = useState("today");
   const [selectedExpense, setSelectedExpense] = useState("today");
   const [selectedCommission, setSelectedCommission] = useState("today");
-  const [current, setCurrent] = useState(1);
   const [filteredSales, setFilteredSales] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
 
@@ -375,7 +370,12 @@ function DashboardContent() {
             ? `${format(new Date(dateYesterday), "EEEE, do MMMM yyyy")}`
             : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
         </h3>
-        <Table dataSource={filteredSales} columns={columns} pagination={true} />
+        <Table
+          dataSource={filteredSales}
+          columns={columns}
+          rowKey="_id"
+          pagination={true}
+        />
       </>
     );
   };
@@ -401,6 +401,7 @@ function DashboardContent() {
         <Table
           dataSource={filteredExpenses}
           columns={expenseColumns}
+          rowKey="_id"
           pagination={true}
         />
       </>
@@ -468,33 +469,6 @@ function DashboardContent() {
       ),
     },
   ];
-
-  const [currentContent, setCurrentContent] = useState(() =>
-    items[0].content()
-  );
-
-  useEffect(() => {
-    const selectedItem = items.find((item) => item.key === current);
-    if (selectedItem) {
-      setCurrentContent(
-        typeof selectedItem.content === "function"
-          ? selectedItem.content(filteredSales, filteredExpenses)
-          : selectedItem.content
-      );
-    }
-  }, [filteredSales, selectedPeriod, filteredExpenses]);
-
-  const onMenuClick = (e) => {
-    setCurrent(e.key);
-    const selectedItem = items.find((item) => item.key === e.key);
-    if (selectedItem) {
-      setCurrentContent(
-        typeof selectedItem.content === "function"
-          ? selectedItem.content(filteredSales, filteredExpenses)
-          : selectedItem.content
-      );
-    }
-  };
 
   return (
     <>
@@ -706,25 +680,7 @@ function DashboardContent() {
           </Col>
         </Row>
       </div>
-      {/* <SalesContent
-        filteredSales={filteredSales}
-        selectedPeriod={selectedPeriod}
-      />
-      <p>Expenses</p>
-      <ExpensesContent
-        filteredExpenses={filteredExpenses}
-        selectedPeriod={selectedPeriod}
-      /> */}
-      {/* <div>
-        <Menu
-          onClick={onMenuClick}
-          selectedKeys={[current]}
-          mode="horizontal"
-          items={items.map(({ content, ...rest }) => rest)}
-        />
-      </div>
 
-      <div>{currentContent}</div> */}
       <Tabs
         defaultActiveKey="1"
         items={items.map((item) => ({
