@@ -5,6 +5,7 @@ import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { format } from "date-fns";
 import Search from "../../components/search";
+import { Link } from "react-router-dom";
 function SalesContent() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -104,6 +105,8 @@ function SalesContent() {
                 "green",
                 "metalic",
                 "coffee",
+                "beige",
+                "silver",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -228,6 +231,13 @@ function SalesContent() {
         {searchValue === "" && (
           <>
             <h2>Sales</h2>{" "}
+            <Button
+              color="green"
+              variant="solid"
+              style={{ marginBottom: "15px" }}
+            >
+              <Link to="/add-sale">Add new item</Link>
+            </Button>
             {groupedSalesByDateSorted.map((date) => (
               <div key={date} style={{ marginBottom: "30px" }}>
                 <h3

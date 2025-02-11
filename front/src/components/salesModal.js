@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Button, Image, Col, Row, Tag } from "antd";
-import format, { formatDate } from "date-fns";
+import { formatDate } from "date-fns";
 
 const SalesModal = ({ openModal, setOpenModal, modalContent, loading }) => {
   return (

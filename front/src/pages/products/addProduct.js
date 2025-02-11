@@ -208,7 +208,6 @@ function AddProduct() {
       </Button>
       <Card
         title="Add New Product"
-        bordered={true}
         style={{ maxWidth: 1100, margin: "20px auto", padding: "20px" }}
       >
         <Form

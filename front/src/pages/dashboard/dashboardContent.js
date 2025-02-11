@@ -180,6 +180,8 @@ function DashboardContent() {
                 "green",
                 "metalic",
                 "coffee",
+                "beige",
+                "silver",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",

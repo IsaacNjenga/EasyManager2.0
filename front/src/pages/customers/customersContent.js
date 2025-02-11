@@ -4,14 +4,20 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { CustomerData } from "../../assets/data/customerData";
 import Search from "../../components/search";
 import CustomerModal from "../../components/customerModal";
+import { SalesData } from "../../assets/data/salesData";
 function CustomersContent() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [error, setError] = useState("");
+  //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
+
+  const updatedCustomerData = SalesData.filter(
+    (customer) =>
+      customer.customerName || customer.customerEmail || customer.customerPhone
+  );
 
   const columns = [
     {
@@ -58,6 +64,7 @@ function CustomersContent() {
                 "green",
                 "metalic",
                 "coffee",
+                "beige",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -173,7 +180,7 @@ function CustomersContent() {
             <h2>Customers</h2>
             <Table
               columns={columns}
-              dataSource={CustomerData}
+              dataSource={updatedCustomerData}
               pagination={true}
             />
           </>

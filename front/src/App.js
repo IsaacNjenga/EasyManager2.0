@@ -11,6 +11,7 @@ import Logs from "./pages/logs/logs";
 import Register from "./pages/register";
 import Login from "./pages/login";
 import AddProduct from "./pages/products/addProduct";
+import AddSale from "./pages/sales/addSale";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/add-sale" element={<AddSale />} />
         </Routes>
       </BrowserRouter>
     </>

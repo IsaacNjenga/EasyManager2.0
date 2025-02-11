@@ -81,6 +81,8 @@ function ProductsContent() {
                 "green",
                 "metalic",
                 "coffee",
+                "beige",
+                "silver",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -201,8 +203,8 @@ function ProductsContent() {
           <>
             <h2>Products</h2>
             <Button
-              color="blue"
-              type="primary"
+              color="purple"
+              variant="solid"
               style={{ marginBottom: "15px" }}
             >
               <Link to="/add-product">Add new item</Link>

@@ -7,9 +7,9 @@ import { Table } from "antd";
 
 function Search({ onSearchChange, columns, dataSource }) {
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   const [data, setData] = useState(dataSource);
-  const [error, setError] = useState("");
+ // const [error, setError] = useState("");
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
