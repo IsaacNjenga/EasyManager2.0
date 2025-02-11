@@ -4,6 +4,7 @@ import { ProductData } from "../../assets/data/productsData";
 import ProductModal from "../../components/productModal";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Search from "../../components/search";
+import { Link } from "react-router-dom";
 
 function ProductsContent() {
   const [openModal, setOpenModal] = useState(false);
@@ -199,6 +200,14 @@ function ProductsContent() {
         {searchValue === "" && (
           <>
             <h2>Products</h2>
+            <Button
+              color="blue"
+              type="primary"
+              style={{ marginBottom: "15px" }}
+            >
+              <Link to="/add-product">Add new item</Link>
+            </Button>
+
             <Table
               columns={columns}
               dataSource={updatedProductData}

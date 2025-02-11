@@ -10,6 +10,7 @@ import Reports from "./pages/reports/reports";
 import Logs from "./pages/logs/logs";
 import Register from "./pages/register";
 import Login from "./pages/login";
+import AddProduct from "./pages/products/addProduct";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/logs" element={<Logs />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/add-product" element={<AddProduct />} />
         </Routes>
       </BrowserRouter>
     </>
