@@ -3,6 +3,8 @@ import { ProductData } from "../../assets/data/productsData";
 import { SalespersonsData } from "../../assets/data/salespersonsData";
 import Swal from "sweetalert2";
 import SaleEntry from "./saleEntry";
+import { Button } from "antd";
+import { Link } from "react-router-dom";
 
 function AddSale() {
   const [saleItems, setSaleItems] = useState([]);
@@ -26,6 +28,9 @@ function AddSale() {
     code: "",
     colour: "",
     image: "",
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
   });
 
   const handleProductSelection = (selectedOption) => {
@@ -114,12 +119,15 @@ function AddSale() {
                   datesold: sale.datesold
                     ? new Date(sale.datesold)
                     : new Date(),
-                  saleperson: sale.saleperson.label,
+                  saleperson: sale.saleperson.value,
                   commission: saleItem.commission || sale.commission,
                   pnumber: saleItem.pnumber || sale.pnumber,
                   code: saleItem.code || sale.code,
                   colour: saleItem.colour || sale.colour,
                   image: saleItem.image || sale.image,
+                  customerName: sale.customerName,
+                  customerEmail: sale.customerEmail,
+                  customerPhone: sale.customerPhone,
                 };
 
                 console.log("saleData", saleData);
@@ -139,6 +147,9 @@ function AddSale() {
               code: "",
               colour: "",
               image: "",
+              customerName: "",
+              customerEmail: "",
+              customerPhone: "",
             });
           } catch (err) {
             console.log(err);
@@ -206,6 +217,11 @@ function AddSale() {
 
   return (
     <>
+      <div style={{ margin: "10px 130px" }}>
+        <Button>
+          <Link to="/sales">Back To Sales</Link>
+        </Button>
+      </div>
       <SaleEntry
         sale={sale}
         setSale={setSale}

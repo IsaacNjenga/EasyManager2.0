@@ -10,6 +10,7 @@ import {
   Tag,
   Popconfirm,
   message,
+  Divider,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import Select from "react-select";
@@ -151,7 +152,7 @@ const SaleEntry = ({
     setOpenDelete(record.key); // Store the clicked record's key
   };
 
-  const handleSalepersonChange = (name, value) => {
+  const handleSaleChange = (name, value) => {
     setSale((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -164,7 +165,9 @@ const SaleEntry = ({
         padding: "20px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
       }}
-    >
+    ><Divider variant="dashed" style={{borderColor: '#7cb305'}}>
+    Sale Details
+  </Divider>
       <Form variant="outlined" onFinish={handleEnterSale} form={form}>
         <div
           style={{
@@ -222,23 +225,55 @@ const SaleEntry = ({
               style={{ marginTop: "20px" }}
             />
             <Form.Item
-              label="Sold By"
+              label="Saleperson"
               style={{ marginTop: "20px" }}
               rules={[{ required: true, message: "Salesperson is required" }]}
             >
               <Select
                 name="saleperson"
-                onChange={(value) =>
-                  handleSalepersonChange("saleperson", value)
-                }
+                onChange={(value) => handleSaleChange("saleperson", value)}
                 value={sale.saleperson}
-                style={{ width: "100%" }}
+                style={{ width: "50%" }}
                 options={salesName.map((saleName) => ({
-                  label: saleName.firstname,
+                  label: `${saleName.firstname} ${
+                    saleName.lastname ? saleName.lastname : null
+                  }`,
                   value: saleName.firstname,
                 }))}
               />
             </Form.Item>
+            <Divider variant="dashed" style={{borderColor: '#7cb305'}}>
+              Customer Details
+            </Divider>
+            <div>
+              <Form.Item label="Customer Name" name="customerName">
+                <Input
+                  style={{ width: "75%" }}
+                  value={sale.customerName}
+                  onChange={(e) =>
+                    handleSaleChange("customerName", e.target.value)
+                  }
+                />
+              </Form.Item>
+              <Form.Item label="Customer Phone" name="customerPhone">
+                <Input
+                  style={{ width: "75%" }}
+                  value={sale.customerPhone}
+                  onChange={(e) =>
+                    handleSaleChange("customerPhone", e.target.value)
+                  }
+                />
+              </Form.Item>
+              <Form.Item label="Customer Email" name="customerEmail">
+                <Input
+                  style={{ width: "75%" }}
+                  value={sale.customerEmail}
+                  onChange={(e) =>
+                    handleSaleChange("customerEmail", e.target.value)
+                  }
+                />
+              </Form.Item>
+            </div>
           </>
         )}
 

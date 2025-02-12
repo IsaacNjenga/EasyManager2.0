@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Button, Image, Tag, Popconfirm, message } from "antd";
+import { Table, Button, Image, Tag, Popconfirm, message, Divider } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
@@ -240,16 +240,19 @@ function SalesContent() {
             </Button>
             {groupedSalesByDateSorted.map((date) => (
               <div key={date} style={{ marginBottom: "30px" }}>
-                <h3
-                  style={{
-                    textAlign: "center",
-                    color: "#00152a",
-                    marginBottom: "15px",
-                    marginTop: "20px",
-                  }}
-                >
-                  Sales for {format(new Date(date), "PPPP")}
-                </h3>
+                <Divider variant="dashed" style={{ borderColor: "#7cb305" }}>
+                  <h3
+                    style={{
+                      textAlign: "center",
+                      color: "#00152a",
+                      marginBottom: "15px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    {format(new Date(date), "PPPP")}{" "}
+                  </h3>
+                </Divider>
+
                 <Table
                   columns={columns}
                   dataSource={groupedSalesByDate[date]}
