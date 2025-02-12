@@ -42,7 +42,7 @@ export const SalespersonsData = [
   {
     _id: "66d52a4533ced71636668085",
     id: 87283,
-    firstname: "PERIS ",
+    firstname: "PERIS",
     lastname: "NYAMBURA",
     datejoined: "2024-09-02T02:59:49.565Z",
     image: null,

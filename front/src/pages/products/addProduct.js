@@ -29,10 +29,6 @@ function AddProduct() {
     setValue((prev) => ({ ...prev, [name]: value }));
   };
 
-  //   const handleNumberChange = (name, number) => {
-  //     setValue((prev) => ({ ...prev, [name]: number }));
-  //   };
-
   const handleImageUpload = (e) => {
     Swal.fire({
       title: "Uploading your image...",
