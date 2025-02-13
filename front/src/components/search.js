@@ -7,23 +7,19 @@ import { Table } from "antd";
 
 function Search({ onSearchChange, columns, dataSource }) {
   const [search, setSearch] = useState("");
-  //const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(dataSource);
- // const [error, setError] = useState("");
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.toLowerCase();
     setSearch(value);
     if (onSearchChange) {
       onSearchChange(value);
     }
   };
 
-  const filteredData = data.filter((item) =>
+  // Dynamically filter data (instead of using useEffect & state)
+  const filteredData = dataSource.filter((item) =>
     Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(search.toLowerCase())
+      (val) => typeof val === "string" && val.toLowerCase().includes(search)
     )
   );
 
@@ -37,16 +33,16 @@ function Search({ onSearchChange, columns, dataSource }) {
               onChange={handleSearchChange}
               placeholder="Search..."
               className="search-bar"
-            ></Form.Control>
+              value={search}
+            />
           </InputGroup>
         </form>
       </div>
+
       {search && <h4>Results for "{search}"</h4>}
-      {search && (
-        <div>
-          <Table columns={columns} dataSource={filteredData} pagination />
-        </div>
-      )}
+      {search ? (
+        <Table columns={columns} dataSource={filteredData} pagination />
+      ) : null}
     </>
   );
 }

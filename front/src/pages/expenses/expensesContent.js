@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Table, Button, Tag, Popconfirm, message } from "antd";
-import { ExpensesData } from "../../assets/data/expensesData";
+//import { ExpensesData } from "../../assets/data/expensesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
+import useExpenses from "../../assets/hooks/expensesHook";
 
 function ExpensesContent() {
-  //const [openModal, setOpenModal] = useState(false);
- // const [loading, setLoading] = useState(false);
-  //const [modalContent, setModalContent] = useState(null);
+  const { expenses, expensesLoading } = useExpenses();
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   //const [error, setError] = useState("");
@@ -104,7 +103,11 @@ function ExpensesContent() {
     <>
       <div style={{ padding: "20px" }}>
         <h2>Expenses</h2>
-        <Table columns={columns} dataSource={ExpensesData} />
+        <Table
+          columns={columns}
+          dataSource={expenses}
+          loading={expensesLoading}
+        />
       </div>
     </>
   );

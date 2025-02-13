@@ -22,15 +22,18 @@ import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { Empty } from "antd";
 import { format } from "date-fns";
-import { ExpensesData } from "../../assets/data/expensesData";
-import { SalesData } from "../../assets/data/salesData";
+//import { ExpensesData } from "../../assets/data/expensesData";
+//import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { getDashboardData } from "./dateLogic";
+import useSales from "../../assets/hooks/saleHook";
+import useExpenses from "../../assets/hooks/expensesHook";
+
 function DashboardContent() {
+  const { salesData, salesLoading } = useSales();
+  const { expenses, expensesLoading } = useExpenses();
   const currentDateTime = new Date();
   const [day, setDay] = useState(null);
-  const [sales, setSales] = useState(SalesData);
-  const [expensesData, setExpensesData] = useState(ExpensesData);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -42,7 +45,10 @@ function DashboardContent() {
   const [filteredSales, setFilteredSales] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
 
-  const dashboardData = getDashboardData({ sales, expensesData, day });
+  const dashboardData = getDashboardData({ salesData, expenses, day });
+
+  console.log("Expenses:", expenses);
+  console.log("Sales:", salesData);
 
   const formatter = (value) => {
     const numericValue = Number(value.replace(/KSh\.|\s|,/g, "").trim());
@@ -74,29 +80,29 @@ function DashboardContent() {
 
     switch (selectedPeriod) {
       case "today":
-        filteredSalesData = filterByDateRange(sales, "datesold", 0);
-        filteredExpensesData = filterByDateRange(expensesData, "date", 0);
+        filteredSalesData = filterByDateRange(salesData, "datesold", 0);
+        filteredExpensesData = filterByDateRange(expenses, "date", 0);
         break;
       case "yesterday":
-        filteredSalesData = filterByDateRange(sales, "datesold", 1);
-        filteredExpensesData = filterByDateRange(expensesData, "date", 1);
+        filteredSalesData = filterByDateRange(salesData, "datesold", 1);
+        filteredExpensesData = filterByDateRange(expenses, "date", 1);
         break;
       case "lastWeek":
-        filteredSalesData = filterByDateRange(sales, "datesold", 7);
-        filteredExpensesData = filterByDateRange(expensesData, "date", 7);
+        filteredSalesData = filterByDateRange(salesData, "datesold", 7);
+        filteredExpensesData = filterByDateRange(expenses, "date", 7);
         break;
       case "lastMonth":
-        filteredSalesData = filterByDateRange(sales, "datesold", 30);
-        filteredExpensesData = filterByDateRange(expensesData, "date", 30);
+        filteredSalesData = filterByDateRange(salesData, "datesold", 30);
+        filteredExpensesData = filterByDateRange(expenses, "date", 30);
         break;
       default:
-        filteredSalesData = filterByDateRange(sales, "datesold", 0);
-        filteredExpensesData = filterByDateRange(expensesData, "date", 0);
+        filteredSalesData = filterByDateRange(salesData, "datesold", 0);
+        filteredExpensesData = filterByDateRange(expenses, "date", 0);
     }
 
     setFilteredSales(filteredSalesData);
     setFilteredExpenses(filteredExpensesData);
-  }, [selectedPeriod, sales, expensesData]); // Runs only when selectedPeriod or sales change
+  }, [selectedPeriod, salesData, expenses]); // Runs only when selectedPeriod or sales change
 
   const lastMonthStarting = new Date();
   lastMonthStarting.setDate(lastMonthStarting.getDate() - 30);
@@ -148,7 +154,7 @@ function DashboardContent() {
       render: (image) => (
         <Image
           src={image}
-          alt="Product"
+          alt="N/a"
           style={{ width: 100, height: 100, borderRadius: "8px" }}
         />
       ),
@@ -382,6 +388,7 @@ function DashboardContent() {
           columns={columns}
           rowKey="_id"
           pagination={true}
+          loading={salesLoading}
         />
       </>
     );
@@ -410,6 +417,7 @@ function DashboardContent() {
           columns={expenseColumns}
           rowKey="_id"
           pagination={true}
+          loading={expensesLoading}
         />
       </>
     );
@@ -580,10 +588,7 @@ function DashboardContent() {
       >
         <Row gutter={30} justify="center">
           <Col span={6}>
-            <Card
-              bordered={false}
-              style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}
-            >
+            <Card style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}>
               <Statistic
                 title={
                   <span
@@ -606,10 +611,7 @@ function DashboardContent() {
             </Card>
           </Col>
           <Col span={6}>
-            <Card
-              bordered={false}
-              style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}
-            >
+            <Card style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}>
               <Statistic
                 title={
                   <span
@@ -633,10 +635,7 @@ function DashboardContent() {
             </Card>
           </Col>
           <Col span={6}>
-            <Card
-              bordered={false}
-              style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}
-            >
+            <Card style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}>
               <Statistic
                 title={
                   <span
@@ -661,10 +660,7 @@ function DashboardContent() {
             </Card>
           </Col>
           <Col span={6}>
-            <Card
-              bordered={true}
-              style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}
-            >
+            <Card style={{ boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)" }}>
               <Statistic
                 title={
                   <span

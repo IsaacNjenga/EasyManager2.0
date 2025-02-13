@@ -3,13 +3,15 @@ import { Table, Button, Tag, Popconfirm, message } from "antd";
 import { SalespersonsData } from "../../assets/data/salespersonsData";
 import { SalesData } from "../../assets/data/salesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import useSales from "../../assets/hooks/saleHook";
 
 function SalespersonsContent() {
+  const { salesData, salesLoading } = useSales();
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   // Preprocess Sales Data: Compute Sales Per Salesperson
-  const salesBySalesperson = SalesData.reduce((acc, sale) => {
+  const salesBySalesperson = salesData.reduce((acc, sale) => {
     const salepersonName = sale.saleperson; // Match using 'saleperson name'
 
     if (!acc[salepersonName]) {
@@ -121,6 +123,7 @@ function SalespersonsContent() {
         columns={columns}
         dataSource={enhancedSalespersonsData}
         rowKey="number"
+        loading={salesLoading}
         //rowKey="_id"
         summary={() => (
           <Table.Summary.Row>

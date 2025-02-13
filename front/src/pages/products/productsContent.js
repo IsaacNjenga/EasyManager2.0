@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Table, Button, Image, Tag, Popconfirm, message } from "antd";
-import { ProductData } from "../../assets/data/productsData";
+//import { ProductData } from "../../assets/data/productsData";
+import useProducts from "../../assets/hooks/productHook";
 import ProductModal from "../../components/productModal";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
 
 function ProductsContent() {
+  const { products, productsLoading } = useProducts();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -15,7 +17,7 @@ function ProductsContent() {
   //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  const groupedProductsByCode = ProductData.reduce((acc, product) => {
+  const groupedProductsByCode = products.reduce((acc, product) => {
     const code = product.code;
 
     if (!acc[code]) {
@@ -27,7 +29,7 @@ function ProductsContent() {
     return acc;
   }, {});
 
-  const updatedProductData = ProductData.map((product) => ({
+  const updatedProductData = products.map((product) => ({
     ...product,
     total_quantity: groupedProductsByCode[product.code].total_quantity,
   }));
@@ -47,7 +49,7 @@ function ProductsContent() {
       render: (image) => (
         <Image
           src={image}
-          alt="Product"
+          alt="N/A"
           style={{ width: 100, height: 100, borderRadius: "8px" }}
         />
       ),
@@ -83,6 +85,10 @@ function ProductsContent() {
                 "coffee",
                 "beige",
                 "silver",
+                "pink",
+                "peach",
+                "dark",
+                "all",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -214,6 +220,7 @@ function ProductsContent() {
               columns={columns}
               dataSource={updatedProductData}
               rowKey="_id"
+              loading={productsLoading}
               pagination={true}
             />
           </>

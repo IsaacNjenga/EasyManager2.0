@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Table, Button, Image, Tag, Popconfirm, message, Divider } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { SalesData } from "../../assets/data/salesData";
+//import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { format } from "date-fns";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
+import useSales from "../../assets/hooks/saleHook";
 function SalesContent() {
+  const { salesData, salesLoading } = useSales();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -15,17 +17,15 @@ function SalesContent() {
   //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
 
-  const totalAmount = SalesData.reduce(
-    (acc, sale) => acc + sale.total,
-    0
-  ).toLocaleString();
+  const totalAmount = salesData
+    .reduce((acc, sale) => acc + sale.total, 0)
+    .toLocaleString();
 
-  const totalCommission = SalesData.reduce(
-    (acc, sale) => acc + sale.commission,
-    0
-  ).toLocaleString();
+  const totalCommission = salesData
+    .reduce((acc, sale) => acc + sale.commission, 0)
+    .toLocaleString();
 
-  const groupedSalesByDate = SalesData.reduce((acc, sale) => {
+  const groupedSalesByDate = salesData.reduce((acc, sale) => {
     const date = format(new Date(sale.datesold), "yyyy-MM-dd");
     acc[date] = acc[date] || [];
     acc[date].push(sale);
@@ -73,7 +73,7 @@ function SalesContent() {
       render: (image) => (
         <Image
           src={image}
-          alt="Product"
+          alt="N/a"
           style={{ width: 100, height: 100, borderRadius: "8px" }}
         />
       ),
@@ -107,6 +107,10 @@ function SalesContent() {
                 "coffee",
                 "beige",
                 "silver",
+                "pink",
+                "peach",
+                "dark",
+                "all",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -225,7 +229,7 @@ function SalesContent() {
       <Search
         onSearchChange={(value) => setSearchValue(value)}
         columns={columns}
-        dataSource={SalesData}
+        dataSource={salesData}
       />
       <div style={{ padding: "0px" }}>
         {searchValue === "" && (
@@ -258,6 +262,7 @@ function SalesContent() {
                   dataSource={groupedSalesByDate[date]}
                   pagination={false}
                   rowKey="_id"
+                  loading={salesLoading}
                   summary={() => (
                     <Table.Summary.Row>
                       <Table.Summary.Cell

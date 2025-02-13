@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   BarChartOutlined,
   DashboardOutlined,
@@ -17,7 +17,7 @@ import "../assets/css/navbar.css";
 import { UserContext } from "../App";
 import Swal from "sweetalert2";
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const siderStyle = {
   overflow: "hidden",
