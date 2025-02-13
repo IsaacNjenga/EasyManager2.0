@@ -91,6 +91,12 @@ const menuItems = [
     label: "Log Out",
     path: "/log-out",
   },
+  {
+    key: "10",
+    icon: PoweroffOutlined,
+    label: "Login",
+    path: "/login",
+  },
 ];
 
 function Navbar() {
