@@ -47,9 +47,6 @@ function DashboardContent() {
 
   const dashboardData = getDashboardData({ salesData, expenses, day });
 
-  console.log("Expenses:", expenses);
-  console.log("Sales:", salesData);
-
   const formatter = (value) => {
     const numericValue = Number(value.replace(/KSh\.|\s|,/g, "").trim());
 
@@ -102,7 +99,7 @@ function DashboardContent() {
 
     setFilteredSales(filteredSalesData);
     setFilteredExpenses(filteredExpensesData);
-  }, [selectedPeriod, salesData, expenses]); // Runs only when selectedPeriod or sales change
+  }, [selectedPeriod, salesData, expenses]);
 
   const lastMonthStarting = new Date();
   lastMonthStarting.setDate(lastMonthStarting.getDate() - 30);
