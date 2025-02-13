@@ -53,14 +53,7 @@ function Login() {
       if (success) {
         localStorage.setItem("token", token);
         setUser(user);
-
-        // Use notification.success directly
-        notification.success({
-          message: `Welcome ${user?.name || "User"}`,
-          description: "Login Successful",
-          icon: <SmileOutlined style={{ color: "#108ee9" }} />,
-        });
-
+        localStorage.setItem("showLoginNotification", "true");
         navigate("/");
       } else {
         Swal.fire({

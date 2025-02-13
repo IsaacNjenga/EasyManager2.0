@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   BarChartOutlined,
   DashboardOutlined,
@@ -10,12 +10,12 @@ import {
   UserSwitchOutlined,
   CreditCardOutlined,
   PoweroffOutlined,
-  ClockCircleOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../assets/css/navbar.css";
-import { format } from "date-fns";
+import { UserContext } from "../App";
+import Swal from "sweetalert2";
 
 const { Header, Content, Sider } = Layout;
 
@@ -30,101 +30,99 @@ const siderStyle = {
   scrollbarGutter: "stable",
 };
 
-const menuItems = [
-  {
-    key: "0",
-    icon: DashboardOutlined,
-    label: "Dashboard",
-    path: "/",
-  },
-  {
-    key: "1",
-    icon: ProductOutlined,
-    label: "Inventory",
-    path: "/products",
-  },
-  {
-    key: "2",
-    icon: ShoppingCartOutlined,
-    label: "Sales",
-    path: "/sales",
-  },
-  {
-    key: "3",
-    icon: TeamOutlined,
-    label: "Customers",
-    path: "/customers",
-  },
-  {
-    key: "4",
-    icon: CreditCardOutlined,
-    label: "Expenses",
-    path: "/expenses",
-  },
-  {
-    key: "5",
-    icon: UserSwitchOutlined,
-    label: "Salespersons",
-    path: "/salespersons",
-  },
-  {
-    key: "6",
-    icon: BarChartOutlined,
-    label: "Reports",
-    path: "/reports",
-  },
-  {
-    key: "7",
-    icon: SolutionOutlined,
-    label: "Logs",
-    path: "/logs",
-  },
-  {
-    key: "8",
-    icon: UserAddOutlined,
-    label: "Add User",
-    path: "/register",
-  },
-  {
-    key: "9",
-    icon: PoweroffOutlined,
-    label: "Log Out",
-    path: "/log-out",
-  },
-  {
-    key: "10",
-    icon: PoweroffOutlined,
-    label: "Login",
-    path: "/login",
-  },
-];
-
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
   const [current, setCurrent] = useState(location.pathname);
-  let [currentDateTime, setCurrentDateTime] = useState(new Date());
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const yearOnly = currentDateTime.toLocaleDateString("en-Us", {
-    year: "numeric",
-  });
-
-  const formattedDate2 = currentDateTime.toLocaleDateString("en-UK", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
 
   const handleClick = (e) => {
     setCurrent(e.key);
   };
+
+  const handleLogout = async () => {
+    try {
+      Swal.fire({
+        icon: "warning",
+        text: "Are you sure you want to logout?",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.clear();
+          setUser(null);
+          navigate("/login");
+        }
+      });
+    } catch (error) {
+      console.log("error logging out", error);
+    }
+  };
+
+  const menuItems = [
+    {
+      key: "0",
+      icon: DashboardOutlined,
+      label: "Dashboard",
+      path: "/",
+    },
+    {
+      key: "1",
+      icon: ProductOutlined,
+      label: "Inventory",
+      path: "/products",
+    },
+    {
+      key: "2",
+      icon: ShoppingCartOutlined,
+      label: "Sales",
+      path: "/sales",
+    },
+    {
+      key: "3",
+      icon: TeamOutlined,
+      label: "Customers",
+      path: "/customers",
+    },
+    {
+      key: "4",
+      icon: CreditCardOutlined,
+      label: "Expenses",
+      path: "/expenses",
+    },
+    {
+      key: "5",
+      icon: UserSwitchOutlined,
+      label: "Salespersons",
+      path: "/salespersons",
+    },
+    {
+      key: "6",
+      icon: BarChartOutlined,
+      label: "Reports",
+      path: "/reports",
+    },
+    {
+      key: "7",
+      icon: SolutionOutlined,
+      label: "Logs",
+      path: "/logs",
+    },
+    {
+      key: "8",
+      icon: UserAddOutlined,
+      label: "Add User",
+      path: "/register",
+    },
+    {
+      key: "9",
+      icon: PoweroffOutlined,
+      label: "Log Out",
+      onClick: handleLogout,
+    },
+  ];
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -142,61 +140,23 @@ function Navbar() {
             textAlign: "center",
           }}
         >
-          John Doe
+          {user && <p>{user.name}</p>}
         </div>
         <Menu
           theme="dark"
           mode="inline"
           selectedKeys={[current]}
           onClick={handleClick}
-          items={menuItems.map(({ key, icon, label, path }) => ({
-            key: path,
+          items={menuItems.map(({ key, icon, label, path, onClick }) => ({
+            key: path || key,
             icon: React.createElement(icon, { style: { fontSize: "1.6rem" } }),
-            label: <Link to={path}>{label}</Link>,
+            label: path ? <Link to={path}>{label}</Link> : label,
+            onClick,
             style: { fontSize: "20px", padding: "5px", margin: "15px 6px" },
           }))}
         />
       </Sider>
       <Layout>
-        {/* <Header
-          style={{
-            margin: "10px 10px",
-            background: colorBgContainer,
-            fontSize: "15px",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "space-between", // Pushes title to center, time to right
-            alignItems: "center",
-            padding: "0 20px",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              fontSize: "20px",
-              fontWeight: "bold",
-            }}
-          >
-            Dashboard 
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              textAlign: "right",
-            }}
-          >
-            {format(new Date(currentDateTime), "PPPP")}
-            <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <ClockCircleOutlined />
-              {format(new Date(currentDateTime), "pp")}
-            </span>
-          </div>
-        </Header> */}
         <Content style={{ margin: "26px 16px", overflow: "auto" }}>
           <div
             style={{

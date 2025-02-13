@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../../components/navbar";
-import { Layout, theme } from "antd";
+import { Layout, notification, theme } from "antd";
 import DashboardContent from "./dashboardContent";
+import { SmileOutlined } from "@ant-design/icons";
 const { Content, Sider, Header } = Layout;
 
 function Dashboard() {
+  const [api, contextHolder] = notification.useNotification();
+  useEffect(() => {
+    if (localStorage.getItem("showLoginNotification") === "true") {
+      api.success({
+        message: `Welcome!`,
+        description: "Login Successful",
+        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+      });
+      localStorage.removeItem("showLoginNotification"); // Clear flag after showing
+    }
+  }, []);
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -37,6 +50,7 @@ function Dashboard() {
                 fontSize: "18px",
               }}
             >
+              {contextHolder}
               <DashboardContent />
             </div>
           </Content>
