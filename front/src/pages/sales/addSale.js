@@ -10,6 +10,7 @@ import axios from "axios";
 function AddSale() {
   const { products, productsLoading } = useProducts();
   const [saleItems, setSaleItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [sales, setSales] = useState([]);
   const [salesName, setSalesName] = useState(SalespersonsData);
@@ -98,6 +99,7 @@ function AddSale() {
         confirmButtonText: "Submit Sale!",
       }).then(async (result) => {
         if (result.isConfirmed) {
+          setLoading(true);
           try {
             for (let saleGroup of updatedSales) {
               for (let saleItem of saleGroup) {
@@ -156,6 +158,8 @@ function AddSale() {
               title: "Sale entry failed!",
               text: "Kindly refresh and try again",
             });
+          } finally {
+            setLoading(false);
           }
         }
       });

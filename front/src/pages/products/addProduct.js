@@ -146,6 +146,7 @@ function AddProduct() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     const productData = { ...value, image: imageUrls, imageId: imagePublicIds };
     console.log(productData);
     try {
@@ -183,6 +184,8 @@ function AddProduct() {
         title: "Product could not be added",
         text: "Refresh and try again",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
