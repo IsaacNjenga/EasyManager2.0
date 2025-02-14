@@ -11,47 +11,50 @@ const getExpenses = async (req, res) => {
 };
 
 const getExpense = async (req, res) => {
-  const id = req.params.id;
-  ExpensesModel.findById(id)
-    .then((expenses) => res.json(expenses))
-    .catch((err) => res.json(err));
+  const { id } = req.params;
+  try {
+    const expense = await ExpensesModel.findById(id);
+    return res.status(201).json({ success: true, expense });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
+  }
 };
 
 const addExpense = async (req, res) => {
-  const { number, description, cost, category, date } = req.body;
-
-  const newExpense = new ExpensesModel({
-    number,
-    description,
-    cost,
-    category,
-    date,
-  });
-
-  newExpense
-    .save()
-    .then((expense) => res.json(expense))
-    .catch((err) => res.status(400).json(err));
+  try {
+    const newExpense = new ExpensesModel({ ...req.body });
+    await newExpense.save();
+    return res.status(201).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
+  }
 };
 
 const deleteExpense = async (req, res) => {
-  const id = req.params.id;
-  ExpensesModel.findByIdAndDelete({ _id: id })
-    .then((expenses) => res.json(expenses))
-    .catch((err) => res.json(err));
+  const { id } = req.query;
+  try {
+    await ExpensesModel.findByIdAndDelete({ _id: id });
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
+  }
 };
 
 const updateExpense = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   try {
     const updatedExpense = await ExpensesModel.findByIdAndUpdate(
       id,
       { $set: req.body },
       { new: true }
     );
-    res.json(updatedExpense);
+    res.status(201).json({ success: true, updatedExpense });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
   }
 };
 

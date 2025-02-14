@@ -10,7 +10,7 @@ const saleSchema = new mongoose.Schema(
     datesold: { type: String },
     saleperson: { type: String },
     commission: { type: Number },
-    image: { type: String },
+    image: { type: [String] },
     pnumber: { type: String },
     code: { type: String },
     colour: { type: String },

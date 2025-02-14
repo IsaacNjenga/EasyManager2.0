@@ -16,7 +16,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-//to parse json bodies from the front end
+//middleware to parse json bodies from the front end
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

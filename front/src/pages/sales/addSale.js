@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { ProductData } from "../../assets/data/productsData";
 import { SalespersonsData } from "../../assets/data/salespersonsData";
 import Swal from "sweetalert2";
 import SaleEntry from "./saleEntry";
 import { Button } from "antd";
 import { Link } from "react-router-dom";
+import useProducts from "../../assets/hooks/productHook";
+import axios from "axios";
 
 function AddSale() {
+  const { products, productsLoading } = useProducts();
   const [saleItems, setSaleItems] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [sales, setSales] = useState([]);
-  const [fetching, setFetching] = useState(false);
-  const [products, setProducts] = useState(
-    Array.isArray(ProductData) ? ProductData : []
-  );
   const [salesName, setSalesName] = useState(SalespersonsData);
   const [sale, setSale] = useState({
     number: "",
@@ -27,7 +25,7 @@ function AddSale() {
     pnumber: "",
     code: "",
     colour: "",
-    image: "",
+    image: [],
     customerName: "",
     customerEmail: "",
     customerPhone: "",
@@ -81,7 +79,6 @@ function AddSale() {
     e.preventDefault();
     setConfirmLoading(true);
     setSaleItems(saleItems.filter((_, i) => i !== index));
-    //Swal.fire({ icon: "success", text: "Removed!" });
     setConfirmLoading(false);
   };
 
@@ -93,18 +90,13 @@ function AddSale() {
   };
 
   const handleEnterSale = () => {
-    console.log("saleitems:", saleItems);
-
-    // Ensure sales is updated correctly
     setSales((prevSales) => {
       const updatedSales = [...prevSales, saleItems];
-      console.log("Updated sales:", updatedSales);
-
       Swal.fire({
         title: "Sale Captured!",
         icon: "success",
         confirmButtonText: "Submit Sale!",
-      }).then((result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
           try {
             for (let saleGroup of updatedSales) {
@@ -131,28 +123,39 @@ function AddSale() {
                 };
 
                 console.log("saleData", saleData);
+                const token = localStorage.getItem("token");
+                const res = await axios.post("add-sale", saleData, {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+                if (res.data.success) {
+                  setSale({
+                    number: "",
+                    description: "",
+                    price: 0,
+                    quantity: 0,
+                    total: 0,
+                    datesold: new Date(),
+                    saleperson: "",
+                    commission: 0,
+                    pnumber: "",
+                    code: "",
+                    colour: "",
+                    image: [],
+                    customerName: "",
+                    customerEmail: "",
+                    customerPhone: "",
+                  });
+                  console.log("success");
+                }
               }
             }
-
-            setSale({
-              number: "",
-              description: "",
-              price: 0,
-              quantity: 0,
-              total: 0,
-              datesold: new Date(),
-              saleperson: "",
-              commission: 0,
-              pnumber: "",
-              code: "",
-              colour: "",
-              image: "",
-              customerName: "",
-              customerEmail: "",
-              customerPhone: "",
-            });
           } catch (err) {
             console.log(err);
+            Swal.fire({
+              icon: "warning",
+              title: "Sale entry failed!",
+              text: "Kindly refresh and try again",
+            });
           }
         }
       });
@@ -171,7 +174,7 @@ function AddSale() {
     }),
   };
 
-  const productOptions = fetching
+  const productOptions = productsLoading
     ? [
         {
           label: (

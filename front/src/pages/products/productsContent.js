@@ -50,7 +50,7 @@ function ProductsContent() {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      ellipsis: true, // Prevents column from expanding
+      ellipsis: true,
       render: (image) => (
         <div style={{ width: "100px", height: "100px", overflow: "hidden" }}>
           <Carousel autoplay autoplaySpeed={2500} fade dotPosition="bottom">
@@ -59,13 +59,13 @@ function ProductsContent() {
                 <Image
                   src={imgSrc}
                   alt="N/A"
-                  height={100} // Reduce image height
-                  width={100} // Reduce image width
+                  height={100}
+                  width={100}
                   style={{
                     objectFit: "cover",
                     borderRadius: "8px",
-                    display: "block", // Prevent extra spacing
-                    margin: "auto", // Center image
+                    display: "block",
+                    margin: "auto",
                   }}
                 />
               </div>

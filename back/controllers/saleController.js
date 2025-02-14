@@ -12,83 +12,60 @@ const getSales = async (req, res) => {
 };
 
 const getSale = async (req, res) => {
-  const id = req.params.id;
-  SalesModel.findById(id)
-    .then((sales) => res.json(sales))
-    .catch((err) => res.json(err));
+  const { id } = req.params;
+  try {
+    const sale = await SalesModel.findById(id);
+    return res.status(201).json({ success: true, sale });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
+  }
 };
 
 const addSale = async (req, res) => {
-  const {
-    number,
-    description,
-    price,
-    quantity,
-    total,
-    datesold,
-    saleperson,
-    commission,
-    image,
-    pnumber,
-    code,
-    colour,
-    customerName,
-    customerPhone,
-    customerEmail,
-  } = req.body;
+  const { pnumber, quantity } = req.body;
 
   try {
-    const newSale = new SalesModel({
-      number,
-      description,
-      price,
-      quantity,
-      total,
-      datesold,
-      saleperson,
-      commission,
-      image,
-      pnumber,
-      code,
-      colour,
-      customerName,
-      customerPhone,
-      customerEmail,
-    });
-
+    const newSale = new SalesModel({ ...req.body });
     const savedSale = await newSale.save();
 
     const product = await ProductsModel.findOne({ number: pnumber });
-
     if (!product) {
       return res.status(404).json({ error: "Product not Found" });
     }
     product.quantity -= quantity;
     await product.save();
 
-    res.json(savedSale);
+    res.status(201).json({ success: true, savedSale });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 const deleteSale = async (req, res) => {
-  const id = req.params.id;
-  SalesModel.findByIdAndDelete({ _id: id })
-    .then((sales) => res.json(sales))
-    .catch((err) => res.json(err));
+  const { id } = req.query;
+  try {
+    await SalesModel.findByIdAndDelete({ _id: id });
+    return res.status(201).json({ success: true });
+  } catch (error) {
+    console.log(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const updateSale = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+
   try {
     const updatedSale = await SalesModel.findByIdAndUpdate(
       id,
       { $set: req.body },
       { new: true }
     );
-    res.json(updatedSale);
+    res.status(201).json({ success: true, updatedSale });
   } catch (err) {
-    res.status(400).json(err);
+    console.log(err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

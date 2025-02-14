@@ -9,7 +9,7 @@ import {
   getProducts,
   updateProduct,
 } from "../controllers/productController.js";
-import { getSales } from "../controllers/saleController.js";
+import { addSale, getSales } from "../controllers/saleController.js";
 import { getExpenses } from "../controllers/expenseController.js";
 
 //Routes
@@ -28,6 +28,7 @@ router.put("/update-product/:id", updateProduct);
 router.delete("/delete-product", deleteProduct);
 
 //sales routes
+router.post("/add-sale", addSale);
 router.get("/sales", getSales);
 
 //expenses routes
