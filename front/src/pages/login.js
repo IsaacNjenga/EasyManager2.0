@@ -33,7 +33,6 @@ function Login() {
   };
 
   const handleSubmit = async () => {
-    console.log(values);
     const { number, password } = values;
     setLoading(true);
 

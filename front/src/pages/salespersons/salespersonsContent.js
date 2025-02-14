@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Button, Tag, Popconfirm, message } from "antd";
 import { SalespersonsData } from "../../assets/data/salespersonsData";
-import { SalesData } from "../../assets/data/salesData";
+//import { SalesData } from "../../assets/data/salesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useSales from "../../assets/hooks/saleHook";
 import { Link } from "react-router-dom";
