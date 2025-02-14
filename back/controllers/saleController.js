@@ -23,8 +23,18 @@ const addSale = async (req, res) => {
 };
 
 const getSales = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const pageNum = parseInt(page, 10);
+  const limitNum = parseInt(limit, 10);
+
+  console.log("pageNum", pageNum);
+  console.log("limitNum", limitNum);
   try {
-    const sales = await SalesModel.find({});
+    const sales = await SalesModel.find()
+      .sort({ datesold: -1 })
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum);
+
     res.status(201).json({ success: true, sales });
   } catch (error) {
     console.error(error);

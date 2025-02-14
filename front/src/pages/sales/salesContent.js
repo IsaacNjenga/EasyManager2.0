@@ -11,7 +11,9 @@ import Loader from "../../components/loader";
 import Swal from "sweetalert2";
 import axios from "axios";
 function SalesContent() {
-  const { salesData, salesLoading, refresh } = useSales();
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  const { salesData, salesLoading, refresh, hasMore } = useSales(page, limit);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -19,6 +21,12 @@ function SalesContent() {
   const [confirmLoading, setConfirmLoading] = useState(false);
   //const [error, setError] = useState("");
   const [searchValue, setSearchValue] = useState("");
+
+  const loadMoreSales = () => {
+    if (hasMore) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   const totalAmount = salesData
     .reduce((acc, sale) => acc + sale.total, 0)
@@ -324,12 +332,26 @@ function SalesContent() {
                 />
               </div>
             ))}{" "}
-            <h3 style={{ color: "green" }}>
-              Overall Total Sales: KSh. {totalAmount}
-            </h3>
-            <h3 style={{ color: "red" }}>
-              Overall Total Commission: KSh. {totalCommission}
-            </h3>
+            {hasMore && (
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                <Button
+                  type="primary"
+                  loading={salesLoading}
+                  onClick={loadMoreSales}
+                >
+                  Load More
+                </Button>
+              </div>
+            )}
+            <div>
+              {" "}
+              <h3 style={{ color: "green" }}>
+                Overall Total Sales: KSh. {totalAmount}
+              </h3>
+              <h3 style={{ color: "red" }}>
+                Overall Total Commission: KSh. {totalCommission}
+              </h3>
+            </div>
           </>
         )}
 

@@ -3,11 +3,13 @@ import { SalespersonsData } from "../../assets/data/salespersonsData";
 import Swal from "sweetalert2";
 import SaleEntry from "./saleEntry";
 import { Button } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useProducts from "../../assets/hooks/productHook";
 import axios from "axios";
+import Loader from "../../components/loader";
 
 function AddSale() {
+  const navigate = useNavigate();
   const { products, productsLoading } = useProducts();
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -147,7 +149,7 @@ function AddSale() {
                     customerEmail: "",
                     customerPhone: "",
                   });
-                  console.log("success");
+                  navigate("/sales");
                 }
               }
             }
@@ -224,6 +226,7 @@ function AddSale() {
 
   return (
     <>
+      {loading && <Loader />}
       <div style={{ margin: "10px 130px" }}>
         <Button>
           <Link to="/sales">Back To Sales</Link>
