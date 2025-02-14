@@ -63,6 +63,11 @@ function Login() {
       }
     } catch (error) {
       console.error("Error during login", error);
+      Swal.fire({
+        icon: "warning",
+        title: "Error",
+        text: "Try refreshing the page",
+      });
     } finally {
       form.resetFields();
       setValues({ number: "", password: "" });
