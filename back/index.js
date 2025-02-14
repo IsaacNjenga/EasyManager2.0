@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://easymanager-gilt.vercel.app/"],
+  origin: ["http://localhost:3000", "https://easymanager-gilt.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
