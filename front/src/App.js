@@ -16,9 +16,12 @@ import AddSale from "./pages/sales/addSale";
 import UpdateProduct from "./pages/products/updateProduct";
 import UpdateSale from "./pages/sales/updateSale";
 
-axios.defaults.baseURL = "http://localhost:3001/EasyManager";
+const localURL = "http://localhost:3001/EasyManager";
+const deployedURL = "https://easy-manager2-0-server.vercel.app/EasyManager";
+
+//axios.defaults.baseURL = localURL
 axios.defaults.withCredentials = true;
-//axios.defaults.baseURL = "https://easy-manager2-0-server.vercel.app/EasyManager";
+axios.defaults.baseURL = deployedURL;
 
 export const UserContext = createContext();
 
