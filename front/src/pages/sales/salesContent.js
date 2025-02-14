@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import useSales from "../../assets/hooks/saleHook";
+import Loader from "../../components/loader";
 function SalesContent() {
   const { salesData, salesLoading } = useSales();
   const [openModal, setOpenModal] = useState(false);
@@ -111,6 +112,7 @@ function SalesContent() {
                 "peach",
                 "dark",
                 "all",
+                "black & green",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -226,6 +228,7 @@ function SalesContent() {
 
   return (
     <>
+      {salesLoading && <Loader />}
       <Search
         onSearchChange={(value) => setSearchValue(value)}
         columns={columns}

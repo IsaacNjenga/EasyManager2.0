@@ -23,7 +23,10 @@ const getProducts = async (req, res) => {
 };
 
 const getProduct = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({ success: false, msg: "Invalid ID" });
+  }
   try {
     const fetchedProduct = await ProductsModel.findById(id);
     res.status(201).json({ success: true, fetchedProduct });
@@ -34,18 +37,18 @@ const getProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.query;
   try {
-    ProductsModel.findByIdAndDelete({ _id: id })
-      .then((products) => res.json(products))
-      .catch((err) => res.json(err));
+    await ProductsModel.findByIdAndDelete({ _id: id });
+    const products = await ProductsModel.find({});
+    res.status(201).json({ success: true, products });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "There was an error!" });
   }
 };
 const updateProduct = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   try {
     const updatedProduct = await ProductsModel.findByIdAndUpdate(
       id,
@@ -54,9 +57,9 @@ const updateProduct = async (req, res) => {
       },
       { new: true }
     );
-    res.json(updatedProduct);
+    res.status(201).json({ success: true, updatedProduct });
   } catch (err) {
-    console.error(error);
+    console.error(err);
     res.status(500).json({ error: "There was an error!" });
   }
 };

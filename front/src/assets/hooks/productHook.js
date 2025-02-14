@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 const useProducts = () => {
   const [products, setProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,9 +31,13 @@ const useProducts = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [refreshKey]);
 
-  return { products, productsLoading };
+  return {
+    products,
+    productsLoading,
+    refresh: () => setRefreshKey((prev) => prev + 1),
+  };
 };
 
 export default useProducts;

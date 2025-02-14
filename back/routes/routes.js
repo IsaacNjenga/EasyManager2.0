@@ -2,7 +2,13 @@ import express from "express";
 import { Register, Login, Auth } from "../controllers/userController.js";
 import { VerifyUser } from "../middleware/verifyUser.js";
 import { deleteImage } from "../controllers/cloudinaryController.js";
-import { getProducts } from "../controllers/productController.js";
+import {
+  addProduct,
+  deleteProduct,
+  getProduct,
+  getProducts,
+  updateProduct,
+} from "../controllers/productController.js";
 import { getSales } from "../controllers/saleController.js";
 import { getExpenses } from "../controllers/expenseController.js";
 
@@ -15,7 +21,11 @@ router.post("/login", Login);
 router.get("/verify", VerifyUser, Auth);
 
 //product routes
+router.post("/add-product", addProduct);
 router.get("/products", getProducts);
+router.get("/product/:id", getProduct);
+router.put("/update-product/:id", updateProduct);
+router.delete("/delete-product", deleteProduct);
 
 //sales routes
 router.get("/sales", getSales);

@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { Form, Input, InputNumber, Button, Row, Col, Card, Image } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Loader from "../../components/loader.js";
 
 const { TextArea } = Input;
 
-function AddProduct() {
+function UpdateProduct() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,44 @@ function AddProduct() {
     bnumber: "",
     summary: "",
   });
+
+  const productToUpdate = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`product/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.data.success) {
+        const product = response.data.fetchedProduct;
+
+        setValue((prevValue) => ({ ...prevValue, ...product }));
+        setImageUrls(product.image);
+        setImagePublicIds(product.imageId);
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "warning",
+        title: "Error fetching details",
+        text: "Try refreshing the page",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      productToUpdate();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (value) {
+      form.setFieldsValue(value); // Ensure data is populated dynamically
+    }
+  }, [value]);
 
   const [form] = Form.useForm();
   const handleChange = (name, value) => {
@@ -151,12 +191,12 @@ function AddProduct() {
     try {
       const token = localStorage.getItem("token");
       await axios
-        .post("add-product", productData, {
+        .put(`update-product/${id}`, productData, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => {
           if (res.data.success) {
-            Swal.fire("Success!", "Product added successfully", "success");
+            Swal.fire("Success!", "Product updated successfully", "success");
             form.resetFields();
             setValue({
               number: "",
@@ -171,16 +211,15 @@ function AddProduct() {
             });
             setImageUrls([]);
             setImagePublicIds([]);
-            setTimeout(() => {
-              navigate("/products");
-            }, 1000);
+
+            navigate("/products");
           }
         });
     } catch (error) {
       console.log(error);
       Swal.fire({
         icon: "warning",
-        title: "Product could not be added",
+        title: "Product could not be updated",
         text: "Refresh and try again",
       });
     }
@@ -217,7 +256,7 @@ function AddProduct() {
 
   return (
     <>
-      {loading && <p>kakjia</p>}
+      {loading && <Loader />}
       <Button>
         <Link to="/products">Back To Inventory</Link>
       </Button>
@@ -230,6 +269,7 @@ function AddProduct() {
           onFinish={handleSubmit}
           form={form}
           variant="outlined"
+          initialValues={value}
         >
           <Row gutter={24}>
             {/* Image Upload Section */}
@@ -426,4 +466,4 @@ function AddProduct() {
   );
 }
 
-export default AddProduct;
+export default UpdateProduct;

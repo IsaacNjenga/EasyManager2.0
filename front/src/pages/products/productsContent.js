@@ -1,14 +1,17 @@
-import React, { useState } from "react";
-import { Table, Button, Image, Tag, Popconfirm, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Image, Tag, Popconfirm, message, Carousel } from "antd";
 //import { ProductData } from "../../assets/data/productsData";
 import useProducts from "../../assets/hooks/productHook";
 import ProductModal from "../../components/productModal";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
+//import Loader from "../../components/loader";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 function ProductsContent() {
-  const { products, productsLoading } = useProducts();
+  const { products, productsLoading, refresh } = useProducts();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -39,21 +42,39 @@ function ProductsContent() {
       title: "No.",
       dataIndex: "number",
       key: "number",
+      width: 60,
       sorter: (a, b) => a.number - b.number,
       defaultSortOrder: "descend",
     },
     {
-      title: " Image",
+      title: "Image",
       dataIndex: "image",
       key: "image",
+      ellipsis: true, // Prevents column from expanding
       render: (image) => (
-        <Image
-          src={image}
-          alt="N/A"
-          style={{ width: 100, height: 100, borderRadius: "8px" }}
-        />
+        <div style={{ width: "100px", height: "100px", overflow: "hidden" }}>
+          <Carousel autoplay autoplaySpeed={2500} fade dotPosition="bottom">
+            {image.map((imgSrc, index) => (
+              <div key={index}>
+                <Image
+                  src={imgSrc}
+                  alt="N/A"
+                  height={100} // Reduce image height
+                  width={100} // Reduce image width
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    display: "block", // Prevent extra spacing
+                    margin: "auto", // Center image
+                  }}
+                />
+              </div>
+            ))}
+          </Carousel>
+        </div>
       ),
     },
+
     {
       title: "Product",
       dataIndex: "description",
@@ -89,6 +110,7 @@ function ProductsContent() {
                 "peach",
                 "dark",
                 "all",
+                "black & green",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -145,13 +167,15 @@ function ProductsContent() {
             <EyeOutlined />
           </Button>
           <Button type="link" title="Edit this item">
-            <EditOutlined />
+            <Link to={`/update-product/${record._id}`}>
+              <EditOutlined />
+            </Link>
           </Button>
           <Popconfirm
             title="Are you sure?"
             description="This action cannot be undone!"
             open={openDelete}
-            onConfirm={() => handleDelete(record)}
+            onConfirm={() => handleDelete(record._id)}
             okButtonProps={{ loading: confirmLoading }}
             onCancel={handleDeleteCancel}
           >
@@ -182,13 +206,28 @@ function ProductsContent() {
     setOpenDelete(record.key); // Store the clicked record's key
   };
 
-  const handleDelete = (record) => {
+  const handleDelete = async (id) => {
     setConfirmLoading(true);
-    //message.success('Deleted!')
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`delete-product?id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+      });
+      refresh();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "warning",
+        title: "Product could not be deleted",
+        text: "Refresh and try again",
+      });
+    } finally {
       setConfirmLoading(false);
-      setOpenDelete(null);
-    }, 2000);
+    }
   };
 
   const handleDeleteCancel = () => {
@@ -198,7 +237,7 @@ function ProductsContent() {
 
   return (
     <>
-      {" "}
+      {/* {productsLoading && <Loader />} */}
       <Search
         onSearchChange={(value) => setSearchValue(value)}
         columns={columns}
@@ -222,6 +261,7 @@ function ProductsContent() {
               rowKey="_id"
               loading={productsLoading}
               pagination={true}
+              tableLayout="fixed"
             />
           </>
         )}
