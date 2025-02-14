@@ -9,8 +9,27 @@ import {
   getProducts,
   updateProduct,
 } from "../controllers/productController.js";
-import { addSale, getSales } from "../controllers/saleController.js";
-import { getExpenses } from "../controllers/expenseController.js";
+import {
+  addSale,
+  deleteSale,
+  getSale,
+  getSales,
+  updateSale,
+} from "../controllers/saleController.js";
+import {
+  addExpense,
+  deleteExpense,
+  getExpense,
+  getExpenses,
+  updateExpense,
+} from "../controllers/expenseController.js";
+import {
+  addSalesperson,
+  deleteSalesperson,
+  getSalespersons,
+  getSalesperson,
+  updateSalesperson,
+} from "../controllers/salespersonController.js";
 
 //Routes
 const router = express.Router();
@@ -30,9 +49,24 @@ router.delete("/delete-product", deleteProduct);
 //sales routes
 router.post("/add-sale", addSale);
 router.get("/sales", getSales);
+router.get("/sale/:id", getSale);
+router.put("/update-sale/:id", updateSale);
+router.delete("/delete-sale", deleteSale);
 
 //expenses routes
+router.post("/add-expense", addExpense);
 router.get("/expenses", getExpenses);
+router.get("/expense/:id", getExpense);
+router.put("/update-expense/:id", updateExpense);
+router.delete("/delete-expense", deleteExpense);
+
+//salespersons routes
+router.post("/add-salesperson", addSalesperson);
+router.get("/expenses", getSalespersons);
+router.get("/expense/:id", getSalesperson);
+router.put("/update-expense/:id", updateSalesperson);
+router.delete("/delete-expense", deleteSalesperson);
+
 //cloudinary routes
 router.delete("/delete-image", VerifyUser, deleteImage);
 

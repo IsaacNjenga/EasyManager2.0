@@ -14,6 +14,7 @@ import Login from "./pages/login";
 import AddProduct from "./pages/products/addProduct";
 import AddSale from "./pages/sales/addSale";
 import UpdateProduct from "./pages/products/updateProduct";
+import UpdateSale from "./pages/sales/updateSale";
 
 axios.defaults.baseURL = "http://localhost:3001/EasyManager";
 axios.defaults.withCredentials = true;
@@ -63,6 +64,7 @@ function App() {
             <Route path="/add-product" element={<AddProduct />} />
             <Route path="/add-sale" element={<AddSale />} />
             <Route path="/update-product/:id" element={<UpdateProduct />} />
+            <Route path="/update-sale/:id" element={<UpdateSale />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

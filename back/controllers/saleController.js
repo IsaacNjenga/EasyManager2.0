@@ -1,6 +1,27 @@
 import ProductsModel from "../models/ProductsModel.js";
 import SalesModel from "../models/salesModel.js";
 
+const addSale = async (req, res) => {
+  const { pnumber, quantity } = req.body;
+
+  try {
+    const newSale = new SalesModel({ ...req.body });
+    const savedSale = await newSale.save();
+
+    const product = await ProductsModel.findOne({ number: pnumber });
+    if (!product) {
+      return res.status(404).json({ error: "Product not Found" });
+    }
+    product.quantity -= quantity;
+    await product.save();
+
+    res.status(201).json({ success: true, savedSale });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const getSales = async (req, res) => {
   try {
     const sales = await SalesModel.find({});
@@ -22,26 +43,6 @@ const getSale = async (req, res) => {
   }
 };
 
-const addSale = async (req, res) => {
-  const { pnumber, quantity } = req.body;
-
-  try {
-    const newSale = new SalesModel({ ...req.body });
-    const savedSale = await newSale.save();
-
-    const product = await ProductsModel.findOne({ number: pnumber });
-    if (!product) {
-      return res.status(404).json({ error: "Product not Found" });
-    }
-    product.quantity -= quantity;
-    await product.save();
-
-    res.status(201).json({ success: true, savedSale });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-};
 const deleteSale = async (req, res) => {
   const { id } = req.query;
   try {

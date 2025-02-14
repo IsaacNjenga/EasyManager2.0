@@ -4,6 +4,7 @@ import { SalespersonsData } from "../../assets/data/salespersonsData";
 import { SalesData } from "../../assets/data/salesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useSales from "../../assets/hooks/saleHook";
+import { Link } from "react-router-dom";
 
 function SalespersonsContent() {
   const { salesData, salesLoading } = useSales();
@@ -74,7 +75,9 @@ function SalespersonsContent() {
       render: (_, record) => (
         <span>
           <Button type="link" title="Edit this item">
-            <EditOutlined />
+            <Link to={`/update-salesperson/${record._id}`}>
+              <EditOutlined />
+            </Link>
           </Button>
           <Popconfirm
             title="Are you sure?"

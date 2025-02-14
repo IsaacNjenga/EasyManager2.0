@@ -1,8 +1,8 @@
-import SalepersonsModel from "../models/SalepersonsModel.js";
+import SalepersonsModel from "../models/SalespersonsModel.js";
 
 const getSalespersons = async (req, res) => {
   try {
-    const salespersons = await SalepersonsModel.find({});
+    const salespersons = await SalespersonsModel.find({});
     return res.status(201).json({ success: true, salespersons });
   } catch (error) {
     console.error(error);
@@ -21,7 +21,7 @@ const getSalesperson = async (req, res) => {
   }
 };
 
-const addSalespersons = async (req, res) => {
+const addSalesperson = async (req, res) => {
   try {
     const newStaff = new SalepersonsModel({ ...req.body });
     await newStaff.save();
@@ -32,7 +32,7 @@ const addSalespersons = async (req, res) => {
   }
 };
 
-const deleteSalespersons = async (req, res) => {
+const deleteSalesperson = async (req, res) => {
   const { id } = req.query;
   try {
     await SalepersonsModel.findByIdAndDelete({ _id: id });
@@ -43,7 +43,7 @@ const deleteSalespersons = async (req, res) => {
   }
 };
 
-const updateSalespersons = async (req, res) => {
+const updateSalesperson = async (req, res) => {
   const { id } = req.params;
   try {
     const updatedStaff = await SalepersonsModel.findByIdAndUpdate(
@@ -61,7 +61,7 @@ const updateSalespersons = async (req, res) => {
 export {
   getSalespersons,
   getSalesperson,
-  addSalespersons,
-  updateSalespersons,
-  deleteSalespersons,
+  addSalesperson,
+  updateSalesperson,
+  deleteSalesperson,
 };

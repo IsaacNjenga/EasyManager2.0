@@ -8,8 +8,10 @@ import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import useSales from "../../assets/hooks/saleHook";
 import Loader from "../../components/loader";
+import Swal from "sweetalert2";
+import axios from "axios";
 function SalesContent() {
-  const { salesData, salesLoading } = useSales();
+  const { salesData, salesLoading, refresh } = useSales();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -175,13 +177,15 @@ function SalesContent() {
             <EyeOutlined />
           </Button>
           <Button type="link" title="Edit this item">
-            <EditOutlined />
+            <Link to={`/update-sale/${record._id}`}>
+              <EditOutlined />
+            </Link>
           </Button>
           <Popconfirm
             title="Are you sure?"
             description="This action cannot be undone!"
             open={openDelete}
-            onConfirm={() => handleDelete(record)}
+            onConfirm={() => handleDelete(record._id)}
             okButtonProps={{ loading: confirmLoading }}
             onCancel={handleDeleteCancel}
           >
@@ -212,13 +216,28 @@ function SalesContent() {
     setOpenDelete(record.key); // Store the clicked record's key
   };
 
-  const handleDelete = (record) => {
+  const handleDelete = async (id) => {
     setConfirmLoading(true);
-    //message.success('Deleted!')
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`delete-sale?id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+      });
+      refresh();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "warning",
+        title: "Product could not be deleted",
+        text: "Refresh and try again",
+      });
+    } finally {
       setConfirmLoading(false);
-      setOpenDelete(null);
-    }, 2000);
+    }
   };
 
   const handleDeleteCancel = () => {
