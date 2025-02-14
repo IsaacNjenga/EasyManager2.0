@@ -1,5 +1,5 @@
 import ProductsModel from "../models/ProductsModel.js";
-import SalesModel from "../models/salesModel.js";
+import SalesModel from "../models/SalesModel.js";
 
 const addSale = async (req, res) => {
   const { pnumber, quantity } = req.body;
