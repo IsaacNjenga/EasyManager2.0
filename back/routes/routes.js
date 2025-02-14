@@ -14,6 +14,7 @@ import {
   deleteSale,
   getSale,
   getSales,
+  getSomeSales,
   updateSale,
 } from "../controllers/saleController.js";
 import {
@@ -49,6 +50,7 @@ router.delete("/delete-product", deleteProduct);
 //sales routes
 router.post("/add-sale", addSale);
 router.get("/sales", getSales);
+router.get("/page-sales", getSomeSales);
 router.get("/sale/:id", getSale);
 router.put("/update-sale/:id", updateSale);
 router.delete("/delete-sale", deleteSale);

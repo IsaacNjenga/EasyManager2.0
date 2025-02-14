@@ -22,19 +22,33 @@ const addSale = async (req, res) => {
   }
 };
 
-const getSales = async (req, res) => {
+const getSomeSales = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
 
-  console.log("pageNum", pageNum);
-  console.log("limitNum", limitNum);
   try {
-    const sales = await SalesModel.find()
+    const someSales = await SalesModel.find()
       .sort({ datesold: -1 })
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum);
 
+    const totalSalesCount = await SalesModel.countDocuments(); // Get total count
+
+    res.status(200).json({
+      success: true,
+      someSales,
+      hasMore: pageNum * limitNum < totalSalesCount, // Ensure correct hasMore value
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "There was an error!" });
+  }
+};
+
+const getSales = async (req, res) => {
+  try {
+    const sales = await SalesModel.find({});
     res.status(201).json({ success: true, sales });
   } catch (error) {
     console.error(error);
@@ -80,4 +94,4 @@ const updateSale = async (req, res) => {
   }
 };
 
-export { getSale, getSales, addSale, deleteSale, updateSale };
+export { getSale, getSales, addSale, deleteSale, updateSale, getSomeSales };

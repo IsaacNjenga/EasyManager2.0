@@ -13,7 +13,10 @@ import axios from "axios";
 function SalesContent() {
   const [page, setPage] = useState(1);
   const limit = 10;
-  const { salesData, salesLoading, refresh, hasMore } = useSales(page, limit);
+  const { salesData, pagedSales, salesLoading, refresh, hasMore } = useSales(
+    page,
+    limit
+  );
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -28,15 +31,15 @@ function SalesContent() {
     }
   };
 
-  const totalAmount = salesData
+  const totalAmount = pagedSales
     .reduce((acc, sale) => acc + sale.total, 0)
     .toLocaleString();
 
-  const totalCommission = salesData
+  const totalCommission = pagedSales
     .reduce((acc, sale) => acc + sale.commission, 0)
     .toLocaleString();
 
-  const groupedSalesByDate = salesData.reduce((acc, sale) => {
+  const groupedSalesByDate = pagedSales.reduce((acc, sale) => {
     const date = format(new Date(sale.datesold), "yyyy-MM-dd");
     acc[date] = acc[date] || [];
     acc[date].push(sale);
