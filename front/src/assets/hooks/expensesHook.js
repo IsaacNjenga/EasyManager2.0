@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 const useExpenses = () => {
   const [expenses, setExpensesData] = useState([]);
   const [expensesLoading, setExpensesLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -30,9 +31,13 @@ const useExpenses = () => {
     };
 
     fetchExpenses();
-  }, []);
+  }, [refreshKey]);
 
-  return { expenses, expensesLoading };
+  return {
+    expenses,
+    expensesLoading,
+    refresh: () => setRefreshKey((prev) => prev + 1),
+  };
 };
 
 export default useExpenses;
