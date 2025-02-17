@@ -5,7 +5,28 @@ import UserModel from "../models/userModel.js";
 
 dotenv.config();
 
-const Register = async (req, res) => {};
+const Register = async (req, res) => {
+  const { name, number, role, password } = req.body;
+  try {
+    const userExist = await UserModel.findOne({ number });
+    if (userExist) {
+      return res.status(400).json({ error: "ID number is already taken" });
+    }
+    const hashPassword = await bcrypt.hash(password, 12);
+    const newUser = new UserModel({
+      name,
+      number,
+      role,
+      password: hashPassword,
+    });
+    const result = await newUser.save();
+    result._doc.password = undefined;
+    return res.status(201).json({ success: true, ...result._doc });
+  } catch (error) {
+    console.error("Error during sign up:", error);
+    res.status(500).json({ error: "Server error, please try again later" });
+  }
+};
 
 const Login = async (req, res) => {
   const { number, password } = req.body;

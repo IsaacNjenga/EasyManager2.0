@@ -7,12 +7,10 @@ import {
   Input,
   Layout,
   Typography,
-  notification,
 } from "antd";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
-  SmileOutlined,
 } from "@ant-design/icons";
 import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";

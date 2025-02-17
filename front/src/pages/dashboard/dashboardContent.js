@@ -34,6 +34,7 @@ function DashboardContent() {
   const { expenses, expensesLoading } = useExpenses();
   const currentDateTime = new Date();
   const [day, setDay] = useState(null);
+  const [date, setDate] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -57,13 +58,21 @@ function DashboardContent() {
     );
   };
   useEffect(() => {
-    const filterByDateRange = (data, dateKey, days) => {
-      const endDate = new Date();
-      endDate.setHours(23, 59, 59, 999);
+    const filterByDateRange = (data, dateKey, days, specificDate = null) => {
+      let startDate, endDate;
+      if (specificDate) {
+        startDate = new Date(specificDate);
+        endDate = new Date(specificDate);
+      } else {
+        endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
 
-      const startDate = new Date();
-      startDate.setDate(endDate.getDate() - days);
+        startDate = new Date();
+        startDate.setDate(endDate.getDate() - days);
+      }
+
       startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(23, 59, 59, 999);
 
       return data.filter((item) => {
         const itemDate = new Date(item[dateKey]);
@@ -92,6 +101,10 @@ function DashboardContent() {
         filteredSalesData = filterByDateRange(salesData, "datesold", 30);
         filteredExpensesData = filterByDateRange(expenses, "date", 30);
         break;
+      case "randomDay":
+        filteredSalesData = filterByDateRange(salesData, "datesold", 0, date);
+        filteredExpensesData = filterByDateRange(expenses, "date", 0, date);
+        break;
       default:
         filteredSalesData = filterByDateRange(salesData, "datesold", 0);
         filteredExpensesData = filterByDateRange(expenses, "date", 0);
@@ -99,7 +112,7 @@ function DashboardContent() {
 
     setFilteredSales(filteredSalesData);
     setFilteredExpenses(filteredExpensesData);
-  }, [selectedPeriod, salesData, expenses]);
+  }, [selectedPeriod, salesData, expenses, date]);
 
   const lastMonthStarting = new Date();
   lastMonthStarting.setDate(lastMonthStarting.getDate() - 30);
@@ -128,6 +141,9 @@ function DashboardContent() {
       setSelectedExpense("randomDay");
       setSelectedCommission("randomDay");
       setSelectedProfit("randomDay");
+      setSelectedPeriod("randomDay");
+      console.log(selectedDate);
+      setDate(new Date(selectedDate));
       setDay(selectedDate);
       if (date === null) {
         setSelectedRevenue("today");
@@ -185,6 +201,11 @@ function DashboardContent() {
                 "coffee",
                 "beige",
                 "silver",
+                "pink",
+                "peach",
+                "dark",
+                "all",
+                "black & green",
               ].includes(col.toLowerCase())
                 ? "black"
                 : "white",
@@ -378,6 +399,8 @@ function DashboardContent() {
               )}`
             : selectedPeriod === "yesterday"
             ? `${format(new Date(dateYesterday), "EEEE, do MMMM yyyy")}`
+            : selectedPeriod === "randomDay"
+            ? `${format(new Date(day), "EEEE, do MMMM yyyy")}`
             : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
         </h3>
         <Table
@@ -407,6 +430,8 @@ function DashboardContent() {
               )}`
             : selectedPeriod === "yesterday"
             ? `${format(new Date(dateYesterday), "EEEE, do MMMM yyyy")}`
+            : selectedPeriod === "randomDay"
+            ? `${format(new Date(day), "EEEE, do MMMM yyyy")}`
             : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
         </h3>
         <Table
@@ -429,6 +454,8 @@ function DashboardContent() {
             ? "for the last 7 days"
             : selectedPeriod === "lastMonth"
             ? "for the last 30 days"
+            : day
+            ? `for ${day}`
             : selectedPeriod}
         </strong>
       ),
@@ -448,6 +475,8 @@ function DashboardContent() {
             ? "for the last 7 days"
             : selectedPeriod === "lastMonth"
             ? "for the last 30 days"
+            : day
+            ? `for ${day}`
             : selectedPeriod}
         </strong>
       ),
@@ -467,6 +496,8 @@ function DashboardContent() {
             ? "for the last 7 days"
             : selectedPeriod === "lastMonth"
             ? "for the last 30 days"
+            : day
+            ? `for ${day}`
             : selectedPeriod}
         </strong>
       ),
@@ -486,7 +517,9 @@ function DashboardContent() {
     <>
       <div style={{ marginBottom: "20px" }}>
         <DatePicker onChange={onDateChange} needConfirm />
-        {day ? <p>Selected Date: {day}</p> : null}
+        {day ? (
+          <p>Selected Date: {format(new Date(day), "EEEE, do MMMM yyyy")}</p>
+        ) : null}
       </div>
       <div>
         <Popover

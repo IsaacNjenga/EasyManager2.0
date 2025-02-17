@@ -64,10 +64,10 @@ router.delete("/delete-expense", deleteExpense);
 
 //salespersons routes
 router.post("/add-salesperson", addSalesperson);
-router.get("/expenses", getSalespersons);
-router.get("/expense/:id", getSalesperson);
-router.put("/update-expense/:id", updateSalesperson);
-router.delete("/delete-expense", deleteSalesperson);
+router.get("/salespersons", getSalespersons);
+router.get("/salesperson/:id", getSalesperson);
+router.put("/update-salesperson/:id", updateSalesperson);
+router.delete("/delete-salesperson", deleteSalesperson);
 
 //cloudinary routes
 router.delete("/delete-image", VerifyUser, deleteImage);

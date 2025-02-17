@@ -9,7 +9,7 @@ import Expenses from "./pages/expenses/expenses";
 import Salespersons from "./pages/salespersons/salespersons";
 import Reports from "./pages/reports/reports";
 import Logs from "./pages/logs/logs";
-import Register from "./pages/register";
+import Register from "./pages/register/register";
 import Login from "./pages/login";
 import AddProduct from "./pages/products/addProduct";
 import AddSale from "./pages/sales/addSale";
@@ -17,8 +17,7 @@ import UpdateProduct from "./pages/products/updateProduct";
 import UpdateSale from "./pages/sales/updateSale";
 
 //axios.defaults.baseURL = "http://localhost:3001/EasyManager";
-axios.defaults.baseURL =
-  "https://easy-manager2-0-server.vercel.app/EasyManager";
+axios.defaults.baseURL = "https://easy-manager2-0-server.vercel.app/EasyManager";
 axios.defaults.withCredentials = true;
 
 export const UserContext = createContext();

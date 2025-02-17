@@ -2,7 +2,7 @@ import SalepersonsModel from "../models/SalespersonsModel.js";
 
 const getSalespersons = async (req, res) => {
   try {
-    const salespersons = await SalespersonsModel.find({});
+    const salespersons = await SalepersonsModel.find({});
     return res.status(201).json({ success: true, salespersons });
   } catch (error) {
     console.error(error);

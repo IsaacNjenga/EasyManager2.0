@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { Form, Input, InputNumber, Button, Row, Col, Card, Image } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Row,
+  Col,
+  Card,
+  Image,
+  Divider,
+} from "antd";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Loader from "../../components/loader.js";
 
@@ -147,7 +157,7 @@ function UpdateSale() {
     <>
       {loading && <Loader />}
       <Button>
-        <Link to="/products">Back To Inventory</Link>
+        <Link to="/sales">Back To Sales</Link>
       </Button>
       <Card
         title="Add New Product"
@@ -293,7 +303,7 @@ function UpdateSale() {
                   />
                 </Form.Item>
 
-                <Form.Item label="Commission" name="commission">
+                <Form.Item label="Commission off total" name="commission">
                   <InputNumber
                     min={0}
                     style={{ width: "75%", color: "red" }}
@@ -303,6 +313,52 @@ function UpdateSale() {
                   />
                 </Form.Item>
               </div>{" "}
+              <Divider variant="sold">Customer Details</Divider>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                  gap: "16px",
+                }}
+              >
+                {" "}
+                <Form.Item
+                  label="Customer Name"
+                  name="customerName"
+                  rules={[{ required: true, message: "Price is required" }]}
+                >
+                  <InputNumber
+                    style={{ width: "75%" }}
+                    min={0}
+                    onChange={(val) => handleChange("price", val)}
+                    value={value.customerName}
+                  />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Customer Phone"
+                  name="customerPhone"
+                  rules={[{ required: true, message: "Price is required" }]}
+                >
+                  <InputNumber
+                    style={{ width: "75%" }}
+                    min={0}
+                    onChange={(val) => handleChange("price", val)}
+                    value={value.customerPhone}
+                  />
+                </Form.Item>{" "}
+                <Form.Item
+                  label="Customer Email Address"
+                  name="customerEmail"
+                  rules={[{ required: true, message: "Price is required" }]}
+                >
+                  <InputNumber
+                    style={{ width: "75%" }}
+                    min={0}
+                    onChange={(val) => handleChange("price", val)}
+                    value={value.customerEmail}
+                  />
+                </Form.Item>
+              </div>
             </Col>
           </Row>
 

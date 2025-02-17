@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Table, Button, Tag, Popconfirm, message } from "antd";
-import { SalespersonsData } from "../../assets/data/salespersonsData";
-//import { SalesData } from "../../assets/data/salesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import useSales from "../../assets/hooks/saleHook";
 import { Link } from "react-router-dom";
+import UseSalesperson from "../../assets/hooks/salespersonHook";
+import axios from "axios";
+import Swal from "sweetalert2";
+import Loader from "../../components/loader";
 
 function SalespersonsContent() {
   const { salesData, salesLoading } = useSales();
+  const { salespersonData, salespersonLoading, refresh } = UseSalesperson();
   const [openDelete, setOpenDelete] = useState(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -24,7 +27,7 @@ function SalespersonsContent() {
   }, {});
 
   //  Enhance SalespersonsData with sales info
-  const enhancedSalespersonsData = SalespersonsData.map((person) => ({
+  const enhancedSalespersonsData = salespersonData.map((person) => ({
     ...person,
     salesMade: salesBySalesperson[person.firstname]?.totalSales || 0,
     amountSold:
@@ -83,7 +86,7 @@ function SalespersonsContent() {
             title="Are you sure?"
             description="This action cannot be undone!"
             open={openDelete}
-            onConfirm={() => handleDelete(record)}
+            onConfirm={() => handleDelete(record._id)}
             okButtonProps={{ loading: confirmLoading }}
             onCancel={handleDeleteCancel}
           >
@@ -105,13 +108,28 @@ function SalespersonsContent() {
     setOpenDelete(record.key); // Store the clicked record's key
   };
 
-  const handleDelete = (record) => {
+  const handleDelete = async (id) => {
     setConfirmLoading(true);
-    //message.success('Deleted!')
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`delete-salesperson?id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+      });
+      refresh();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "warning",
+        title: "Product could not be deleted",
+        text: "Refresh and try again",
+      });
+    } finally {
       setConfirmLoading(false);
-      setOpenDelete(null);
-    }, 2000);
+    }
   };
 
   const handleDeleteCancel = () => {
@@ -120,46 +138,49 @@ function SalespersonsContent() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Salespersons</h2>
-      <Table
-        columns={columns}
-        dataSource={enhancedSalespersonsData}
-        rowKey="number"
-        loading={salesLoading}
-        //rowKey="_id"
-        summary={() => (
-          <Table.Summary.Row>
-            <Table.Summary.Cell index={1} colSpan={1}></Table.Summary.Cell>
-            <Table.Summary.Cell index={2} colSpan={1}></Table.Summary.Cell>
-            <Table.Summary.Cell index={3}>
-              <strong style={{ color: "green" }}>Total</strong>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={3}>
-              <Tag
-                color="green"
-                style={{
-                  boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)",
-                }}
-              >
-                <strong style={{ color: "green" }}>{totalSalesMade}</strong>
-              </Tag>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={4}>
-              <Tag
-                color="#008001"
-                style={{
-                  boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)",
-                }}
-              >
-                <strong>KSh. {totalAmountSold}</strong>
-              </Tag>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={5}></Table.Summary.Cell>
-          </Table.Summary.Row>
-        )}
-      />
-    </div>
+    <>
+      {salespersonLoading && <Loader />}
+      <div style={{ padding: "20px" }}>
+        <h2>Salespersons</h2>
+        <Table
+          columns={columns}
+          dataSource={enhancedSalespersonsData}
+          rowKey="number"
+          loading={salesLoading}
+          //rowKey="_id"
+          summary={() => (
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={1} colSpan={1}></Table.Summary.Cell>
+              <Table.Summary.Cell index={2} colSpan={1}></Table.Summary.Cell>
+              <Table.Summary.Cell index={3}>
+                <strong style={{ color: "green" }}>Total</strong>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={3}>
+                <Tag
+                  color="green"
+                  style={{
+                    boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)",
+                  }}
+                >
+                  <strong style={{ color: "green" }}>{totalSalesMade}</strong>
+                </Tag>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={4}>
+                <Tag
+                  color="#008001"
+                  style={{
+                    boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.9)",
+                  }}
+                >
+                  <strong>KSh. {totalAmountSold}</strong>
+                </Tag>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={5}></Table.Summary.Cell>
+            </Table.Summary.Row>
+          )}
+        />
+      </div>
+    </>
   );
 }
 
