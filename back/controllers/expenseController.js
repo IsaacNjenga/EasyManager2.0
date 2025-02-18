@@ -11,7 +11,7 @@ const getExpenses = async (req, res) => {
 };
 
 const getExpense = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.query;
   try {
     const expense = await ExpensesModel.findById(id);
     return res.status(201).json({ success: true, expense });
@@ -44,10 +44,12 @@ const deleteExpense = async (req, res) => {
 };
 
 const updateExpense = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.query;
   try {
     const updatedExpense = await ExpensesModel.findByIdAndUpdate(
-      id,
+      {
+        _id: id,
+      },
       { $set: req.body },
       { new: true }
     );

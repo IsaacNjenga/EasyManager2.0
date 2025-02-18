@@ -58,8 +58,8 @@ router.delete("/delete-sale", deleteSale);
 //expenses routes
 router.post("/add-expense", addExpense);
 router.get("/expenses", getExpenses);
-router.get("/expense/:id", getExpense);
-router.put("/update-expense/:id", updateExpense);
+router.get("/expense", getExpense);
+router.put("/update-expense", updateExpense);
 router.delete("/delete-expense", deleteExpense);
 
 //salespersons routes

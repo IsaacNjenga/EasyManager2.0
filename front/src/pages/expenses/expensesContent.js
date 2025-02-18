@@ -7,6 +7,8 @@ import {
   message,
   Tabs,
   DatePicker,
+  Drawer,
+  Space,
 } from "antd";
 //import { ExpensesData } from "../../assets/data/expensesData";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
@@ -16,6 +18,7 @@ import { getTotalExpenses } from "./expenseCalculator";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import UpdateExpense from "./updateExpense";
 
 function ExpensesContent() {
   const { expenses, expensesLoading, refresh } = useExpenses();
@@ -25,6 +28,15 @@ function ExpensesContent() {
   const [day, setDay] = useState(null);
   const [date, setDate] = useState(null);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
+  const [openRecordId, setOpenRecordId] = useState(null);
+
+  const showDrawer = (id) => {
+    setOpenRecordId(id);
+  };
+
+  const onClose = () => {
+    setOpenRecordId(null);
+  };
 
   const onDateChange = (date) => {
     if (date) {
@@ -117,9 +129,35 @@ function ExpensesContent() {
       key: "action",
       render: (_, record) => (
         <span>
-          <Button type="link" title="Edit this item">
+          <Button
+            type="link"
+            title="Edit this item"
+            onClick={() => showDrawer(record._id)}
+          >
             <EditOutlined />
           </Button>
+          <Drawer
+            title="Edit expense"
+            width={700}
+            onClose={onClose}
+            open={openRecordId === record._id}
+            styles={{
+              body: {
+                paddingBottom: 80,
+              },
+            }}
+            extra={
+              <Space>
+                <Button onClick={onClose}>Cancel</Button>
+              </Space>
+            }
+          >
+            <UpdateExpense
+              id={record._id}
+              setOpen={setOpenRecordId}
+              refresh={refresh}
+            />
+          </Drawer>
           <Popconfirm
             title="Are you sure?"
             description="This action cannot be undone!"
