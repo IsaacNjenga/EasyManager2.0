@@ -254,15 +254,26 @@ function ReportsContent() {
       ) : (
         <>
           <Card title="Monthly Sales & Expenses Report">
-            <Button onClick={() => monthlyReport("prevMonth")}>
-              Last Month
-            </Button>
-            <Button onClick={() => monthlyReport("currentMonth")}>
-              This Month
-            </Button>
-            <Button onClick={() => monthlyReport("nextMonth")}>
-              Next Month
-            </Button>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Button
+                onClick={() => monthlyReport("prevMonth")}
+                style={{ background: "red", color: "white" }}
+              >
+                Last Month
+              </Button>
+              <Button
+                onClick={() => monthlyReport("currentMonth")}
+                style={{ background: "green", color: "white" }}
+              >
+                This Month
+              </Button>
+              <Button
+                onClick={() => monthlyReport("nextMonth")}
+                style={{ background: "#00152a", color: "white" }}
+              >
+                Next Month
+              </Button>
+            </div>
             <Divider variant="solid">
               {currentMonth.toLocaleDateString("en-UK", {
                 month: "long",
@@ -271,7 +282,7 @@ function ReportsContent() {
             </Divider>
 
             <BarChart
-              width={1180}
+              width={1100}
               height={400}
               data={dayData}
               margin={{ left: 40, right: 5 }}
@@ -326,11 +337,26 @@ function ReportsContent() {
             </BarChart>
           </Card>
           <Card title="Yearly Sales & Expenses Report">
-            <Button onClick={() => yearlyReport("prevYear")}>Last Year</Button>
-            <Button onClick={() => yearlyReport("currentYear")}>
-              This Year
-            </Button>
-            <Button onClick={() => yearlyReport("nextYear")}>Next Year</Button>{" "}
+            <div style={{ display: "flex", gap: "10px" }}>
+              <Button
+                onClick={() => yearlyReport("prevYear")}
+                style={{ background: "red", color: "white" }}
+              >
+                Last Year
+              </Button>
+              <Button
+                onClick={() => yearlyReport("currentYear")}
+                style={{ background: "green", color: "white" }}
+              >
+                This Year
+              </Button>
+              <Button
+                onClick={() => yearlyReport("nextYear")}
+                style={{ background: "#00152a", color: "white" }}
+              >
+                Next Year
+              </Button>{" "}
+            </div>
             <Divider variant="solid">
               {currentYear.toLocaleDateString("en-UK", {
                 year: "numeric",
