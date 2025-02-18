@@ -1,80 +1,399 @@
-import React from "react";
-import { Card, Row, Col } from "antd";
+import { Button, Card, Divider } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import Loader from "../../components/loader";
+import useSales from "../../assets/hooks/saleHook";
+import useExpenses from "../../assets/hooks/expensesHook";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
   CartesianGrid,
+  Legend,
+  Tooltip,
+  Rectangle,
+  Label,
+  BarChart,
+  Bar,
 } from "recharts";
 
-const salesData = [
-  { month: "Jan", sales: 300 },
-  { month: "Feb", sales: 400 },
-  { month: "Mar", sales: 350 },
-  { month: "Apr", sales: 500 },
-  { month: "May", sales: 450 },
-  { month: "Jun", sales: 600 },
-];
-
-const userActivityData = [
-  { month: "Jan", activeUsers: 50 },
-  { month: "Feb", activeUsers: 70 },
-  { month: "Mar", activeUsers: 60 },
-  { month: "Apr", activeUsers: 80 },
-  { month: "May", activeUsers: 90 },
-  { month: "Jun", activeUsers: 100 },
-];
-
 function ReportsContent() {
+  const { salesData, salesLoading } = useSales();
+  const { expenses, expensesLoading } = useExpenses();
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentYear, setCurrentYear] = useState(new Date());
+  const [dayData, setDayData] = useState([]);
+  const [monthData, setMonthData] = useState([]);
+
+  const monthlyReport = useCallback(
+    (action) => {
+      let newMonth = new Date(currentMonth);
+      if (action === "prevMonth") {
+        newMonth.setMonth(newMonth.getMonth() - 1);
+      } else if (action === "nextMonth") {
+        newMonth.setMonth(newMonth.getMonth() + 1);
+      } else if (action === "currentMonth") {
+        newMonth = new Date();
+      }
+
+      newMonth.setDate(1);
+      newMonth.setHours(0, 0, 0, 0);
+      if (newMonth.getTime() !== currentMonth.getTime()) {
+        setCurrentMonth(newMonth);
+      }
+      let StartDate = new Date(newMonth);
+      let currentDate = new Date(StartDate);
+
+      const totalDayAmount = {};
+      const totalDayExpense = {};
+      const totalDayProfit = {};
+      const dailyData = {};
+      let updatedDayData = [];
+
+      for (let i = 1; i <= 31; i++) {
+        const dayStartDate = new Date(currentDate);
+        const dayEndDate = new Date(dayStartDate);
+        dayEndDate.setHours(23, 59, 59, 999);
+
+        const dailySales = salesData.filter((sale) => {
+          const saleDate = new Date(sale.datesold);
+          return saleDate >= dayStartDate && saleDate <= dayEndDate;
+        });
+
+        const dailyExpenses = expenses.filter((expense) => {
+          const expenseDate = new Date(expense.date);
+          return expenseDate >= dayStartDate && expenseDate <= dayEndDate;
+        });
+
+        const dayNumber = i;
+        const dailyTotalAmount = dailySales.reduce(
+          (acc, sale) => acc + sale.total,
+          0
+        );
+
+        const dailyTotalCommissions = dailySales.reduce(
+          (acc, sale) => acc + sale.commission,
+          0
+        );
+        const dailyExpenseAmount = dailyExpenses.reduce(
+          (acc, expense) => acc + expense.cost + dailyTotalCommissions,
+          0
+        );
+
+        const netProfit = dailyTotalAmount - dailyExpenseAmount;
+        const dailyTotalProfit = netProfit > 0 ? netProfit : 0;
+
+        totalDayAmount[`day ${dayNumber}`] = dailyTotalAmount;
+        totalDayProfit[`day ${dayNumber}`] = dailyTotalProfit;
+        totalDayExpense[`day ${dayNumber}`] = dailyExpenseAmount;
+
+        dailyData[`day ${dayNumber}`] = {
+          day: `day ${dayNumber}`,
+          startDate: dayStartDate.toISOString().slice(0, 10),
+          endDate: dayEndDate.toISOString().slice(0, 10),
+          sales: dailySales.length,
+          totalAmount: dailyTotalAmount,
+          totalProfit: dailyTotalProfit,
+          totalExpense: dailyExpenseAmount,
+        };
+
+        currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
+      }
+
+      const currentMonthName = currentDate.getMonth();
+      let days;
+      if (
+        currentMonthName === 9 ||
+        currentMonthName === 4 ||
+        currentMonthName === 6 ||
+        currentMonthName === 11
+      ) {
+        days = 30;
+      } else if (currentMonthName === 2) {
+        const currentYear = currentDate.getFullYear();
+        if (
+          (currentYear % 4 === 0 && currentYear % 100 !== 0) ||
+          currentYear % 400 === 0
+        ) {
+          days = 29;
+        } else {
+          days = 28;
+        }
+      } else {
+        days = 31;
+      }
+
+      for (let i = 1; i <= days; i++) {
+        let daySuffix;
+        if (i === 1 || i === 21 || i === 31) {
+          daySuffix = `${i}st`;
+        } else if (i === 2 || i === 22) {
+          daySuffix = `${i}nd`;
+        } else if (i === 3 || i === 23) {
+          daySuffix = `${i}rd`;
+        } else {
+          daySuffix = `${i}th`;
+        }
+
+        updatedDayData.push({
+          name: daySuffix,
+          Revenue: totalDayAmount[`day ${i}`],
+          Profit: totalDayProfit[`day ${i}`],
+          Expenses: totalDayExpense[`day ${i}`],
+        });
+      }
+      setDayData(updatedDayData);
+    },
+    [salesData, expenses, currentMonth]
+  );
+
+  const yearlyReport = useCallback(
+    (action) => {
+      let newYear = new Date(currentYear);
+      if (action === "prevYear") {
+        newYear.setFullYear(newYear.getFullYear() - 1);
+        newYear.setMonth(0, 1);
+      } else if (action === "nextYear") {
+        newYear.setFullYear(newYear.getFullYear() + 1);
+        newYear.setMonth(0, 1);
+      } else if (action === "currentYear") {
+        newYear = new Date();
+        newYear.setMonth(0, 1);
+      }
+
+      if (newYear.getTime() !== currentYear.getTime()) {
+        setCurrentYear(newYear);
+      }
+      const year = newYear.getFullYear();
+      const monthsData = {};
+      const monthNames = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      const totalMonthAmount = {};
+      const totalMonthProfit = {};
+      const totalMonthExpense = {};
+
+      for (let i = 0; i < 12; i++) {
+        const monthStartDate = new Date(year, i, 1);
+        const monthEndDate = new Date(year, i + 1, 0);
+
+        const monthSales = salesData.filter((sale) => {
+          const saleDate = new Date(sale.datesold);
+          return saleDate >= monthStartDate && saleDate <= monthEndDate;
+        });
+        const monthExpenses = expenses.filter((expense) => {
+          const expenseDate = new Date(expense.date);
+          return expenseDate >= monthStartDate && expenseDate <= monthEndDate;
+        });
+
+        const monthNumber = i + 1;
+        const monthTotalAmount = monthSales.reduce(
+          (acc, sale) => acc + sale.total,
+          0
+        );
+        const monthlyTotalCommissions = monthSales.reduce(
+          (acc, sale) => acc + sale.commission,
+          0
+        );
+        const monthExpenseAmount = monthExpenses.reduce(
+          (acc, expense) => acc + expense.cost + monthlyTotalCommissions,
+          0
+        );
+
+        const netProfit = monthTotalAmount - monthExpenseAmount;
+        const monthTotalProfit = netProfit > 0 ? netProfit : 0;
+
+        totalMonthAmount[`month ${monthNumber}`] = monthTotalAmount;
+        totalMonthProfit[`month ${monthNumber}`] = monthTotalProfit;
+        totalMonthExpense[`month ${monthNumber}`] = monthExpenseAmount;
+
+        monthsData[`month ${monthNumber}`] = {
+          month: `month ${monthNumber}`,
+          startDate: monthStartDate.toISOString().slice(0, 10),
+          endDate: monthEndDate.toISOString().slice(0, 10),
+          sales: monthSales.length,
+          totalAmount: monthTotalAmount,
+          totalProfit: monthTotalProfit,
+          totalExpense: monthExpenseAmount,
+        };
+      }
+
+      const monthlyData = Array.from({ length: 12 }, (_, i) => {
+        const monthNumber = i + 1;
+        return {
+          name: monthNames[i],
+          Revenue: totalMonthAmount[`month ${monthNumber}`] || 0,
+          Profit: totalMonthProfit[`month ${monthNumber}`] || 0,
+          Expenses: totalMonthExpense[`month ${monthNumber}`] || 0,
+        };
+      });
+
+      setMonthData(monthlyData);
+    },
+    [salesData, expenses, currentYear]
+  );
+
+  useEffect(() => {
+    yearlyReport();
+    monthlyReport();
+  }, [yearlyReport, monthlyReport]);
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Reports</h2>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Card
-            title="Sales Overview"
-            bordered={false}
-            style={{ width: "100%", height: 350 }}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={salesData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Line
-                  type="monotone"
-                  dataKey="sales"
-                  stroke="#1890ff"
-                  strokeWidth={2}
+    <>
+      {salesLoading || expensesLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <Card title="Monthly Sales & Expenses Report">
+            <Button onClick={() => monthlyReport("prevMonth")}>
+              Last Month
+            </Button>
+            <Button onClick={() => monthlyReport("currentMonth")}>
+              This Month
+            </Button>
+            <Button onClick={() => monthlyReport("nextMonth")}>
+              Next Month
+            </Button>
+            <Divider variant="solid">
+              {currentMonth.toLocaleDateString("en-UK", {
+                month: "long",
+                year: "numeric",
+              })}
+            </Divider>
+
+            <BarChart
+              width={1180}
+              height={400}
+              data={dayData}
+              margin={{ left: 40, right: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis tickFormatter={(value) => `${value.toLocaleString()}`}>
+                <Label
+                  value="(Ksh)"
+                  offset={-20}
+                  position="insideLeft"
+                  style={{ textAnchor: "middle", fontSize: "16px" }}
                 />
-              </LineChart>
-            </ResponsiveContainer>
+              </YAxis>
+              <Legend />
+              <Tooltip
+                formatter={(value, name, props) =>
+                  `Ksh.${value.toLocaleString()}`
+                }
+              />
+
+              <Bar dataKey="Revenue" fill="green">
+                {monthData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Revenue}
+                    fill="#8884d8"
+                  />
+                ))}
+              </Bar>
+              <Bar dataKey="Profit" fill="blue">
+                {dayData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Profit}
+                    fill="#82ca9d"
+                  />
+                ))}
+              </Bar>
+              <Bar dataKey="Expenses" fill="red">
+                {dayData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Expenses}
+                    fill="red"
+                  />
+                ))}
+              </Bar>
+            </BarChart>
           </Card>
-        </Col>
-        <Col span={12}>
-          <Card title="User Activity" bordered={false}>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={userActivityData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Line
-                  type="monotone"
-                  dataKey="activeUsers"
-                  stroke="#52c41a"
-                  strokeWidth={2}
+          <Card title="Yearly Sales & Expenses Report">
+            <Button onClick={() => yearlyReport("prevYear")}>Last Year</Button>
+            <Button onClick={() => yearlyReport("currentYear")}>
+              This Year
+            </Button>
+            <Button onClick={() => yearlyReport("nextYear")}>Next Year</Button>{" "}
+            <Divider variant="solid">
+              {currentYear.toLocaleDateString("en-UK", {
+                year: "numeric",
+              })}
+            </Divider>
+            <BarChart
+              width={1100}
+              height={400}
+              data={monthData}
+              margin={{ left: 50, right: 10 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis tickFormatter={(value) => `${value.toLocaleString()}`}>
+                <Label
+                  value="(Ksh)"
+                  offset={-30}
+                  position="insideLeft"
+                  style={{ textAnchor: "middle", fontSize: "16px" }}
                 />
-              </LineChart>
-            </ResponsiveContainer>
+              </YAxis>
+              <Legend />
+              <Tooltip
+                formatter={(value, name, props) =>
+                  `Ksh.${value.toLocaleString()}`
+                }
+              />
+
+              <Bar dataKey="Revenue" fill="green">
+                {monthData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Revenue}
+                    fill="#8884d8"
+                  />
+                ))}
+              </Bar>
+              <Bar dataKey="Profit" fill="blue">
+                {monthData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Profit}
+                    fill="#82ca9d"
+                  />
+                ))}
+              </Bar>
+              <Bar dataKey="Expenses" fill="red">
+                {dayData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Expenses}
+                    fill="#82ca9d"
+                  />
+                ))}
+              </Bar>
+            </BarChart>
           </Card>
-        </Col>
-      </Row>
-    </div>
+        </>
+      )}
+    </>
   );
 }
 
