@@ -15,9 +15,11 @@ import AddProduct from "./pages/products/addProduct";
 import AddSale from "./pages/sales/addSale";
 import UpdateProduct from "./pages/products/updateProduct";
 import UpdateSale from "./pages/sales/updateSale";
+import AddExpense from "./pages/expenses/addExpense";
 
 //axios.defaults.baseURL = "http://localhost:3001/EasyManager";
-axios.defaults.baseURL = "https://easy-manager2-0-server.vercel.app/EasyManager";
+axios.defaults.baseURL =
+  "https://easy-manager2-0-server.vercel.app/EasyManager";
 axios.defaults.withCredentials = true;
 
 export const UserContext = createContext();
@@ -66,6 +68,7 @@ function App() {
             <Route path="/add-sale" element={<AddSale />} />
             <Route path="/update-product/:id" element={<UpdateProduct />} />
             <Route path="/update-sale/:id" element={<UpdateSale />} />
+            <Route path="/add-expense" element={<AddExpense />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>

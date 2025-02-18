@@ -13,6 +13,9 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { format } from "date-fns";
 import useExpenses from "../../assets/hooks/expensesHook";
 import { getTotalExpenses } from "./expenseCalculator";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 function ExpensesContent() {
   const { expenses, expensesLoading, refresh } = useExpenses();
@@ -63,11 +66,14 @@ function ExpensesContent() {
     setFilteredExpenses(filteredExpensesData);
   }, [expenses, date]);
 
-  let expenseToday = expenses.filter((expense) => expense.date === today);
+  let expenseToday = expenses.filter(
+    (expense) =>
+      format(new Date(expense.date), "yyyy-MM-dd") ===
+      format(new Date(today), "yyyy-MM-dd")
+  );
   let randomDayExpenses = filteredExpenses;
 
   const columns = [
-    { title: "No.", dataIndex: "number", key: "number" },
     {
       title: "Date",
       dataIndex: "date",
@@ -118,7 +124,7 @@ function ExpensesContent() {
             title="Are you sure?"
             description="This action cannot be undone!"
             open={openDelete}
-            onConfirm={() => handleDelete(record)}
+            onConfirm={() => handleDelete(record._id)}
             okButtonProps={{ loading: confirmLoading }}
             onCancel={handleDeleteCancel}
           >
@@ -140,13 +146,28 @@ function ExpensesContent() {
     setOpenDelete(record.key); // Store the clicked record's key
   };
 
-  const handleDelete = (record) => {
+  const handleDelete = async (id) => {
     setConfirmLoading(true);
-    //message.success('Deleted!')
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`delete-expense?id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Deleted",
+      });
+      refresh();
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "warning",
+        title: "Product could not be deleted",
+        text: "Refresh and try again",
+      });
+    } finally {
       setConfirmLoading(false);
-      setOpenDelete(null);
-    }, 2000);
+    }
   };
 
   const handleDeleteCancel = () => {
@@ -230,7 +251,18 @@ function ExpensesContent() {
     <>
       <div style={{ padding: "20px" }}>
         <h2>Expenses</h2>
-        <DatePicker onChange={onDateChange} needConfirm />
+        <Button
+          type="primary"
+          style={{ margin: "20px auto", backgroundColor: "red" }}
+        >
+          <Link to="/add-expense">Add New Expense</Link>
+        </Button>
+        <br />
+        <DatePicker
+          onChange={onDateChange}
+          needConfirm
+          style={{ width: "30%" }}
+        />
         {day ? (
           <p>Selected Date: {format(new Date(day), "EEEE, do MMMM yyyy")}</p>
         ) : null}
