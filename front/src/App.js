@@ -10,7 +10,7 @@ import Salespersons from "./pages/salespersons/salespersons";
 import Reports from "./pages/reports/reports";
 import Logs from "./pages/logs/logs";
 import Register from "./pages/register/register";
-import Login from "./pages/login";
+import Login from "./pages/login/login";
 import AddProduct from "./pages/products/addProduct";
 import AddSale from "./pages/sales/addSale";
 import UpdateProduct from "./pages/products/updateProduct";

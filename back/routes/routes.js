@@ -1,5 +1,10 @@
 import express from "express";
-import { Register, Login, Auth } from "../controllers/userController.js";
+import {
+  Register,
+  Login,
+  Auth,
+  credentialsChange,
+} from "../controllers/userController.js";
 import { VerifyUser } from "../middleware/verifyUser.js";
 import { deleteImage } from "../controllers/cloudinaryController.js";
 import {
@@ -31,6 +36,7 @@ import {
   getSalesperson,
   updateSalesperson,
 } from "../controllers/salespersonController.js";
+import { otpRequest, verifyOtp } from "../controllers/emailController.js";
 
 //Routes
 const router = express.Router();
@@ -39,6 +45,11 @@ const router = express.Router();
 router.post("/register", Register);
 router.post("/login", Login);
 router.get("/verify", VerifyUser, Auth);
+router.post("/password-change", credentialsChange);
+
+//mail routes
+router.post("/otp-request", otpRequest);
+router.post("/verify-otp", verifyOtp);
 
 //product routes
 router.post("/add-product", addProduct);

@@ -67,5 +67,29 @@ const Login = async (req, res) => {
 const Auth = (req, res) => {
   return res.status(201).json({ success: true, user: { ...req.user._doc } });
 };
+const credentialsChange = async (req, res) => {
+  const { newPassword, number } = req.body;
 
-export { Auth, Login, Register };
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    const user = await UserModel.findOneAndUpdate(
+      { number },
+      { $set: { password: hashedPassword } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(400).json({ error: `User under ${number} not found` });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password changed successfully!" });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export { Auth, Login, Register, credentialsChange };

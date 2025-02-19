@@ -3,19 +3,19 @@ import {
   Button,
   Card,
   Divider,
+  Drawer,
   Form,
   Input,
   Layout,
+  Space,
   Typography,
 } from "antd";
-import {
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
-import { UserContext } from "../App";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { UserContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import ChangePassword from "./changePassword";
 const { Content } = Layout;
 const { Title } = Typography;
 
@@ -25,6 +25,15 @@ function Login() {
   const [values, setValues] = useState({ number: "", password: "" });
   const { setUser } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(null);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setOpen(null);
+  };
 
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -115,7 +124,7 @@ function Login() {
                 }
                 name="number"
                 rules={[{ required: true, message: "Sales ID required" }]}
-                style={{ color: "#fff" }} // This may not affect the label
+                style={{ color: "#fff" }}
               >
                 <Input
                   onChange={(e) => handleChange("number", e.target.value)}
@@ -142,6 +151,27 @@ function Login() {
                   style={{ height: 40, fontSize: 16 }}
                 />
               </Form.Item>
+
+              <p
+                style={{ color: "white", cursor: "pointer" }}
+                onClick={showDrawer}
+              >
+                Forgot password?
+              </p>
+              <Drawer
+                title="Change your password"
+                width={600}
+                onClose={closeDrawer}
+                open={open}
+                styles={{ body: { paddingBottom: 60 } }}
+                extra={
+                  <Space>
+                    <Button onClick={closeDrawer}>Cancel</Button>
+                  </Space>
+                }
+              >
+                <ChangePassword setOpen={setOpen} />
+              </Drawer>
 
               <Form.Item style={{ textAlign: "center", marginTop: 20 }}>
                 <Button
