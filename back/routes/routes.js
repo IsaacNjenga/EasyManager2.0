@@ -5,7 +5,7 @@ import {
   Auth,
   credentialsChange,
 } from "../controllers/userController.js";
-import { VerifyUser } from "../middleware/verifyUser.js";
+import { VerifyUser } from "../middleware/VerifyUser.js";
 import { deleteImage } from "../controllers/cloudinaryController.js";
 import {
   addProduct,

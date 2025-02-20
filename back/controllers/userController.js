@@ -40,7 +40,7 @@ const Login = async (req, res) => {
     const name = userExist.name;
     const role = userExist.role;
     // Compare passwords
-    const match = bcrypt.compare(password, userExist.password);
+    const match = await bcrypt.compare(password, userExist.password);
     if (!match) {
       return res.json({ error: "Incorrect password. Try again" });
     }
@@ -50,11 +50,11 @@ const Login = async (req, res) => {
       {
         number: userExist.number,
         id: userExist._id,
-        role: userExist.role,
-        name: userExist.name,
+        role: role,
+        name: name,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" }
     );
     const user = { ...userExist._doc, password: undefined };
     return res.status(201).json({ success: true, user, token });
@@ -71,11 +71,11 @@ const credentialsChange = async (req, res) => {
   const { newPassword, number } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    const hashPassword = await bcrypt.hash(newPassword, 12);
 
     const user = await UserModel.findOneAndUpdate(
       { number },
-      { $set: { password: hashedPassword } },
+      { $set: { password: hashPassword } },
       { new: true }
     );
 

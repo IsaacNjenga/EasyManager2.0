@@ -17,17 +17,18 @@ import {
   Button,
   Table,
   Tabs,
+  Skeleton,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { Empty } from "antd";
 import { format } from "date-fns";
-//import { ExpensesData } from "../../assets/data/expensesData";
-//import { SalesData } from "../../assets/data/salesData";
 import SalesModal from "../../components/salesModal";
 import { getDashboardData } from "./dateLogic";
 import useSales from "../../assets/hooks/saleHook";
 import useExpenses from "../../assets/hooks/expensesHook";
+import Loader from "../../components/loader";
+import Swal from "sweetalert2";
 
 function DashboardContent() {
   const { salesData, salesLoading } = useSales();
@@ -58,60 +59,68 @@ function DashboardContent() {
     );
   };
   useEffect(() => {
-    const filterByDateRange = (data, dateKey, days, specificDate = null) => {
-      let startDate, endDate;
-      if (specificDate) {
-        startDate = new Date(specificDate);
-        endDate = new Date(specificDate);
-      } else {
-        endDate = new Date();
+    setLoading(true);
+    try {
+      const filterByDateRange = (data, dateKey, days, specificDate = null) => {
+        let startDate, endDate;
+        if (specificDate) {
+          startDate = new Date(specificDate);
+          endDate = new Date(specificDate);
+        } else {
+          endDate = new Date();
+          endDate.setHours(23, 59, 59, 999);
+
+          startDate = new Date();
+          startDate.setDate(endDate.getDate() - days);
+        }
+
+        startDate.setHours(0, 0, 0, 0);
         endDate.setHours(23, 59, 59, 999);
 
-        startDate = new Date();
-        startDate.setDate(endDate.getDate() - days);
+        return data.filter((item) => {
+          const itemDate = new Date(item[dateKey]);
+          itemDate.setHours(0, 0, 0, 0);
+          return itemDate >= startDate && itemDate <= endDate;
+        });
+      };
+
+      let filteredSalesData = [];
+      let filteredExpensesData = [];
+
+      switch (selectedPeriod) {
+        case "today":
+          filteredSalesData = filterByDateRange(salesData, "datesold", 0);
+          filteredExpensesData = filterByDateRange(expenses, "date", 0);
+          break;
+        case "yesterday":
+          filteredSalesData = filterByDateRange(salesData, "datesold", 1);
+          filteredExpensesData = filterByDateRange(expenses, "date", 1);
+          break;
+        case "lastWeek":
+          filteredSalesData = filterByDateRange(salesData, "datesold", 7);
+          filteredExpensesData = filterByDateRange(expenses, "date", 7);
+          break;
+        case "lastMonth":
+          filteredSalesData = filterByDateRange(salesData, "datesold", 30);
+          filteredExpensesData = filterByDateRange(expenses, "date", 30);
+          break;
+        case "randomDay":
+          filteredSalesData = filterByDateRange(salesData, "datesold", 0, date);
+          filteredExpensesData = filterByDateRange(expenses, "date", 0, date);
+          break;
+        default:
+          filteredSalesData = filterByDateRange(salesData, "datesold", 0);
+          filteredExpensesData = filterByDateRange(expenses, "date", 0);
       }
 
-      startDate.setHours(0, 0, 0, 0);
-      endDate.setHours(23, 59, 59, 999);
-
-      return data.filter((item) => {
-        const itemDate = new Date(item[dateKey]);
-        itemDate.setHours(0, 0, 0, 0);
-        return itemDate >= startDate && itemDate <= endDate;
-      });
-    };
-
-    let filteredSalesData = [];
-    let filteredExpensesData = [];
-
-    switch (selectedPeriod) {
-      case "today":
-        filteredSalesData = filterByDateRange(salesData, "datesold", 0);
-        filteredExpensesData = filterByDateRange(expenses, "date", 0);
-        break;
-      case "yesterday":
-        filteredSalesData = filterByDateRange(salesData, "datesold", 1);
-        filteredExpensesData = filterByDateRange(expenses, "date", 1);
-        break;
-      case "lastWeek":
-        filteredSalesData = filterByDateRange(salesData, "datesold", 7);
-        filteredExpensesData = filterByDateRange(expenses, "date", 7);
-        break;
-      case "lastMonth":
-        filteredSalesData = filterByDateRange(salesData, "datesold", 30);
-        filteredExpensesData = filterByDateRange(expenses, "date", 30);
-        break;
-      case "randomDay":
-        filteredSalesData = filterByDateRange(salesData, "datesold", 0, date);
-        filteredExpensesData = filterByDateRange(expenses, "date", 0, date);
-        break;
-      default:
-        filteredSalesData = filterByDateRange(salesData, "datesold", 0);
-        filteredExpensesData = filterByDateRange(expenses, "date", 0);
+      setFilteredSales(filteredSalesData);
+      setFilteredExpenses(filteredExpensesData);
+    } catch (error) {
+      console.error(error);
+      Swal.fire("error", "Error", "Try refreshing the page!");
+    } finally {
+      setLoading(false);
     }
-
-    setFilteredSales(filteredSalesData);
-    setFilteredExpenses(filteredExpensesData);
   }, [selectedPeriod, salesData, expenses, date]);
 
   const lastMonthStarting = new Date();
@@ -515,6 +524,7 @@ function DashboardContent() {
 
   return (
     <>
+      {/* {loading && <Loader />} */}
       <div style={{ marginBottom: "20px" }}>
         <DatePicker onChange={onDateChange} needConfirm />
         {day ? (
@@ -635,7 +645,6 @@ function DashboardContent() {
                 value={`KSh.${revenueDisplay().toLocaleString()}`}
                 precision={2}
                 valueStyle={{ color: "#00152a" }}
-                //prefix={<DollarCircleOutlined style={iconStyle} />}
                 formatter={formatter}
               />
             </Card>
@@ -660,7 +669,6 @@ function DashboardContent() {
                 precision={2}
                 valueStyle={{ color: "#fc0100" }}
                 formatter={formatter}
-                // prefix={<CreditCardOutlined style={iconStyle} />}
               />
             </Card>
           </Col>
@@ -684,8 +692,6 @@ function DashboardContent() {
                 precision={2}
                 valueStyle={{ color: "orange" }}
                 formatter={formatter}
-                // prefix={<UserDeleteOutlined style={iconStyle} />}
-                // formatter={formatter}
               />
             </Card>
           </Col>
@@ -709,8 +715,6 @@ function DashboardContent() {
                 precision={2}
                 valueStyle={{ color: "#008001" }}
                 formatter={formatter}
-                //prefix={<RiseOutlined style={iconStyle} />}
-                // formatter={formatter}
               />
             </Card>
           </Col>

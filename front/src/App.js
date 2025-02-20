@@ -19,8 +19,7 @@ import AddExpense from "./pages/expenses/addExpense";
 import ProtectedRoutes from "./components/protectedRoutes";
 
 //axios.defaults.baseURL = "http://localhost:3001/EasyManager";
-axios.defaults.baseURL =
-  "https://easy-manager2-0-server.vercel.app/EasyManager";
+axios.defaults.baseURL = "https://easy-manager2-0-server.vercel.app/EasyManager";
 axios.defaults.withCredentials = true;
 
 export const UserContext = createContext();

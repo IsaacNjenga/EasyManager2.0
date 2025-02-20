@@ -70,11 +70,19 @@ function Login() {
       }
     } catch (error) {
       console.error("Error during login", error);
-      Swal.fire({
-        icon: "warning",
-        title: "Error",
-        text: "Try refreshing the page",
-      });
+      if (error.response && error.response.status === 400) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response.data.error,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Something went wrong!",
+        });
+      }
     } finally {
       form.resetFields();
       setValues({ number: "", password: "" });
