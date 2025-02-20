@@ -37,6 +37,11 @@ import {
   updateSalesperson,
 } from "../controllers/salespersonController.js";
 import { otpRequest, verifyOtp } from "../controllers/emailController.js";
+import {
+  getLogins,
+  getLogouts,
+  logout,
+} from "../controllers/logsController.js";
 
 //Routes
 const router = express.Router();
@@ -79,6 +84,11 @@ router.get("/salespersons", getSalespersons);
 router.get("/salesperson/:id", getSalesperson);
 router.put("/update-salesperson/:id", updateSalesperson);
 router.delete("/delete-salesperson", deleteSalesperson);
+
+//logs routes
+router.get("/logins", getLogins);
+router.get("/logouts", getLogouts);
+router.post("/logout", logout);
 
 //cloudinary routes
 router.delete("/delete-image", VerifyUser, deleteImage);

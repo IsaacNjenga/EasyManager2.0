@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { SalespersonsData } from "../../assets/data/salespersonsData";
 import Swal from "sweetalert2";
 import SaleEntry from "./saleEntry";
 import { Button } from "antd";
@@ -7,15 +6,16 @@ import { Link, useNavigate } from "react-router-dom";
 import useProducts from "../../assets/hooks/productHook";
 import axios from "axios";
 import Loader from "../../components/loader";
+import UseSalesperson from "../../assets/hooks/salespersonHook";
 
 function AddSale() {
   const navigate = useNavigate();
   const { products, productsLoading } = useProducts();
+  const {salespersonData,salespersonsLoading} = UseSalesperson()
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [sales, setSales] = useState([]);
-  const [salesName, setSalesName] = useState(SalespersonsData);
   const [sale, setSale] = useState({
     number: "",
     description: "",
@@ -241,7 +241,7 @@ function AddSale() {
         handleProductSelection={handleProductSelection}
         removeCurrentRow={removeCurrentRow}
         productOptions={productOptions}
-        salesName={salesName}
+        salesName={salespersonData}
         handleDateChange={handleDateChange}
         filterOption={filterOption}
         customStyles={customStyles}

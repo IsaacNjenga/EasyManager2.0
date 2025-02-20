@@ -2,7 +2,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import UserModel from "../models/userModel.js";
-
+import LoginModel from "../models/LoginModel.js";
+import moment from "moment";
 dotenv.config();
 
 const Register = async (req, res) => {
@@ -56,6 +57,13 @@ const Login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "15m" }
     );
+
+    //save login info
+    const loginTime = moment().format("DD-MM-YYYY, HH:mm:ss");
+    const loginInfo = new LoginModel({ number, name, loginTime, role });
+    await loginInfo.save();
+    console.log("login captured");
+
     const user = { ...userExist._doc, password: undefined };
     return res.status(201).json({ success: true, user, token });
   } catch (err) {

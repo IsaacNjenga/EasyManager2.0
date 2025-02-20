@@ -1,65 +1,74 @@
 import React from "react";
-import { Table } from "antd";
-
-const sampleLogs = [
-  {
-    key: "1",
-    username: "john.doe",
-    action: "Login",
-    timestamp: "2023-01-15 08:30:00",
-    ipAddress: "192.168.1.1",
-  },
-  {
-    key: "2",
-    username: "jane.smith",
-    action: "Login",
-    timestamp: "2023-01-15 09:00:00",
-    ipAddress: "192.168.1.2",
-  },
-  {
-    key: "3",
-    username: "alice.johnson",
-    action: "Logout",
-    timestamp: "2023-01-15 09:30:00",
-    ipAddress: "192.168.1.3",
-  },
-  {
-    key: "4",
-    username: "bob.brown",
-    action: "Login",
-    timestamp: "2023-01-15 10:00:00",
-    ipAddress: "192.168.1.4",
-  },
-  {
-    key: "5",
-    username: "john.doe",
-    action: "Logout",
-    timestamp: "2023-01-15 10:15:00",
-    ipAddress: "192.168.1.1",
-  },
-];
+import { Table, Tabs } from "antd";
+import useLogs from "../../assets/hooks/logsHook";
+import { format } from "date-fns";
 
 function LogsContent() {
-  const columns = [
+  const { logins, loginsLoading, logoutsLoading, logouts } = useLogs();
+
+  const columns1 = [
     {
       title: "Username",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Timestamp",
-      dataIndex: "timestamp",
-      key: "timestamp",
+      dataIndex: "loginTime",
+      key: "loginTime",
     },
     {
-      title: "IP Address",
-      dataIndex: "ipAddress",
-      key: "ipAddress",
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+  ];
+
+  const columns2 = [
+    {
+      title: "Username",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Timestamp",
+      dataIndex: "logoutTime",
+      key: "logoutTime",
+    },
+  ];
+
+  const Logins = () => {
+    return (
+      <Table
+        columns={columns1}
+        dataSource={logins}
+        loading={loginsLoading}
+        rowKey="_id"
+      />
+    );
+  };
+
+  const Logouts = () => {
+    return (
+      <Table
+        columns={columns2}
+        dataSource={logouts}
+        loading={logoutsLoading}
+        rowKey="_id"
+      />
+    );
+  };
+
+  const items = [
+    {
+      label: <strong>Logins</strong>,
+      key: "1",
+      content: () => <Logins />,
+    },
+    {
+      label: <strong>Logouts</strong>,
+      key: "2",
+      content: () => <Logouts />,
     },
   ];
 
@@ -67,7 +76,15 @@ function LogsContent() {
     <>
       <div style={{ padding: "20px" }}>
         <h2>User Logs</h2>
-        <Table columns={columns} dataSource={sampleLogs} />
+
+        <Tabs
+          defaultActiveKey="1"
+          items={items.map((item) => ({
+            key: item.key,
+            label: item.label,
+            children: item.content(),
+          }))}
+        />
       </div>
     </>
   );

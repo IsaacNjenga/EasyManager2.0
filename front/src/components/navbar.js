@@ -16,6 +16,7 @@ import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import "../assets/css/navbar.css";
 import { UserContext } from "../App";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const { Content, Sider } = Layout;
 
@@ -49,10 +50,13 @@ function Navbar() {
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes",
-      }).then((result) => {
+      }).then(async (result) => {
         if (result.isConfirmed) {
-          localStorage.clear();
-          setUser(null);
+          const res = await axios.post("logout", user);
+          if (res.data.success) {
+            localStorage.clear();
+            setUser(null);
+          }
           navigate("/login");
         }
       });
