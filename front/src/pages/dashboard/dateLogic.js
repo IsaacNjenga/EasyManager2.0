@@ -1,7 +1,7 @@
 export function getDashboardData({ salesData, expenses, day }) {
   //console.log(salesData);
   let sales = salesData;
-  let expensesData =expenses
+  let expensesData = expenses;
   // Helper function to filter sales and expenses by a specific date range
   const filterByDateRange = (data, dateKey, days) => {
     const endDate = new Date();
@@ -10,6 +10,13 @@ export function getDashboardData({ salesData, expenses, day }) {
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - days);
     startDate.setHours(0, 0, 0, 0);
+
+    const currentDateTime = new Date();
+
+    if (days === 1) {
+      startDate.setDate(currentDateTime.getDate() - 1);
+      endDate.setDate(currentDateTime.getDate() - 1);
+    }
 
     return data.filter((item) => {
       const itemDate = new Date(item[dateKey]);
@@ -45,11 +52,13 @@ export function getDashboardData({ salesData, expenses, day }) {
     0
   );
 
-  const expenseToday =
-    filteredExpenses.reduce((acc, expense) => acc + expense.cost, 0) +
-    commissionsToday;
+  const expenseToday = filteredExpenses.reduce(
+    (acc, expense) => acc + expense.cost,
+    0
+  );
 
-  const profitToday = Number(revenueToday) - Number(expenseToday);
+  const profitToday =
+    Number(revenueToday) - Number(expenseToday + commissionsToday);
 
   // Yesterday's data
   const filteredSalesYesterday = filterByDateRange(sales, "datesold", 1);
@@ -63,10 +72,13 @@ export function getDashboardData({ salesData, expenses, day }) {
     (acc, sale) => acc + sale.commission,
     0
   );
-  const expenseYesterday =
-    filteredExpensesYesterday.reduce((acc, expense) => acc + expense.cost, 0) +
-    commissionsYesterday;
-  const profitYesterday = Number(revenueYesterday) - Number(expenseYesterday);
+  const expenseYesterday = filteredExpensesYesterday.reduce(
+    (acc, expense) => acc + expense.cost,
+    0
+  );
+
+  const profitYesterday =
+    Number(revenueYesterday) - Number(expenseYesterday + commissionsYesterday);
 
   // Weekly data
   const filteredSalesLastWeek = filterByDateRange(sales, "datesold", 7);
@@ -80,10 +92,13 @@ export function getDashboardData({ salesData, expenses, day }) {
     (acc, sale) => acc + sale.commission,
     0
   );
-  const expenseWeekly =
-    filteredExpensesLastWeek.reduce((acc, expense) => acc + expense.cost, 0) +
-    commissionsWeekly;
-  const profitWeekly = Number(revenueWeekly) - Number(expenseWeekly);
+  const expenseWeekly = filteredExpensesLastWeek.reduce(
+    (acc, expense) => acc + expense.cost,
+    0
+  );
+
+  const profitWeekly =
+    Number(revenueWeekly) - Number(expenseWeekly + commissionsWeekly);
 
   // Monthly data
   const filteredSalesLastMonth = filterByDateRange(sales, "datesold", 31);
@@ -98,10 +113,13 @@ export function getDashboardData({ salesData, expenses, day }) {
     0
   );
 
-  const expenseMonthly =
-    filteredExpensesLastMonth.reduce((acc, expense) => acc + expense.cost, 0) +
-    commissionsMonthly;
-  const profitMonthly = Number(revenueMonthly) - Number(expenseMonthly);
+  const expenseMonthly = filteredExpensesLastMonth.reduce(
+    (acc, expense) => acc + expense.cost,
+    0
+  );
+
+  const profitMonthly =
+    Number(revenueMonthly) - Number(expenseMonthly + commissionsMonthly);
 
   //filter selectedDate data
   const filteredSelectedDateSales = filterSelectedDateDate(
@@ -125,13 +143,14 @@ export function getDashboardData({ salesData, expenses, day }) {
     0
   );
 
-  const selectedDateExpense =
-    filteredSelectedDateExpenses.reduce(
-      (acc, expense) => acc + expense.cost,
-      0
-    ) + selectedDateCommissions;
+  const selectedDateExpense = filteredSelectedDateExpenses.reduce(
+    (acc, expense) => acc + expense.cost,
+    0
+  );
+
   const selectedDateProfit =
-    Number(selectedDateRevenue) - Number(selectedDateExpense);
+    Number(selectedDateRevenue) -
+    Number(selectedDateExpense + selectedDateCommissions);
 
   return {
     revenueToday,

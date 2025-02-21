@@ -17,18 +17,16 @@ import {
   Button,
   Table,
   Tabs,
-  Skeleton,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
-import { Empty } from "antd";
 import { format } from "date-fns";
 import SalesModal from "../../components/salesModal";
 import { getDashboardData } from "./dateLogic";
 import useSales from "../../assets/hooks/saleHook";
 import useExpenses from "../../assets/hooks/expensesHook";
-import Loader from "../../components/loader";
 import Swal from "sweetalert2";
+import DashboardGraph from "./dashboardGraph";
 
 function DashboardContent() {
   const { salesData, salesLoading } = useSales();
@@ -58,6 +56,7 @@ function DashboardContent() {
       </span>
     );
   };
+
   useEffect(() => {
     setLoading(true);
     try {
@@ -72,6 +71,11 @@ function DashboardContent() {
 
           startDate = new Date();
           startDate.setDate(endDate.getDate() - days);
+        }
+
+        if (days === 1 && !specificDate) {
+          startDate.setDate(currentDateTime.getDate() - 1);
+          endDate.setDate(currentDateTime.getDate() - 1);
         }
 
         startDate.setHours(0, 0, 0, 0);
@@ -498,24 +502,13 @@ function DashboardContent() {
       ),
     },
     {
-      label: (
-        <strong>
-          Reports{" "}
-          {selectedPeriod === "lastWeek"
-            ? "for the last 7 days"
-            : selectedPeriod === "lastMonth"
-            ? "for the last 30 days"
-            : day
-            ? `for ${day}`
-            : selectedPeriod}
-        </strong>
-      ),
+      label: <strong>Weekly Report</strong>,
       key: "3",
-      content: (selectedPeriod) => (
+      content: () => (
         <>
           {/* <h3>{format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}</h3> */}
           <div style={{ margin: "30px auto" }}>
-            <Empty />
+            <DashboardGraph />
           </div>
         </>
       ),

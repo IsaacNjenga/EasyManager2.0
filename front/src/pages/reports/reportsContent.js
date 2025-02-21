@@ -45,6 +45,8 @@ function ReportsContent() {
       const totalDayAmount = {};
       const totalDayExpense = {};
       const totalDayProfit = {};
+      const totalDayCommission = {};
+
       const dailyData = {};
       let updatedDayData = [];
 
@@ -74,7 +76,7 @@ function ReportsContent() {
           0
         );
         const dailyExpenseAmount = dailyExpenses.reduce(
-          (acc, expense) => acc + expense.cost + dailyTotalCommissions,
+          (acc, expense) => acc + expense.cost,
           0
         );
 
@@ -84,6 +86,7 @@ function ReportsContent() {
         totalDayAmount[`day ${dayNumber}`] = dailyTotalAmount;
         totalDayProfit[`day ${dayNumber}`] = dailyTotalProfit;
         totalDayExpense[`day ${dayNumber}`] = dailyExpenseAmount;
+        totalDayCommission[`day ${dayNumber}`] = dailyTotalCommissions;
 
         dailyData[`day ${dayNumber}`] = {
           day: `day ${dayNumber}`,
@@ -93,6 +96,7 @@ function ReportsContent() {
           totalAmount: dailyTotalAmount,
           totalProfit: dailyTotalProfit,
           totalExpense: dailyExpenseAmount,
+          totalCommission: dailyTotalCommissions,
         };
 
         currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
@@ -138,6 +142,7 @@ function ReportsContent() {
           Revenue: totalDayAmount[`day ${i}`],
           Profit: totalDayProfit[`day ${i}`],
           Expenses: totalDayExpense[`day ${i}`],
+          Commissions: totalDayCommission[`day ${i}`],
         });
       }
       setDayData(updatedDayData);
@@ -181,6 +186,7 @@ function ReportsContent() {
       const totalMonthAmount = {};
       const totalMonthProfit = {};
       const totalMonthExpense = {};
+      const totalMonthCommission = {};
 
       for (let i = 0; i < 12; i++) {
         const monthStartDate = new Date(year, i, 1);
@@ -205,7 +211,7 @@ function ReportsContent() {
           0
         );
         const monthExpenseAmount = monthExpenses.reduce(
-          (acc, expense) => acc + expense.cost + monthlyTotalCommissions,
+          (acc, expense) => acc + expense.cost,
           0
         );
 
@@ -215,6 +221,7 @@ function ReportsContent() {
         totalMonthAmount[`month ${monthNumber}`] = monthTotalAmount;
         totalMonthProfit[`month ${monthNumber}`] = monthTotalProfit;
         totalMonthExpense[`month ${monthNumber}`] = monthExpenseAmount;
+        totalMonthCommission[`month ${monthNumber}`] = monthlyTotalCommissions;
 
         monthsData[`month ${monthNumber}`] = {
           month: `month ${monthNumber}`,
@@ -224,6 +231,7 @@ function ReportsContent() {
           totalAmount: monthTotalAmount,
           totalProfit: monthTotalProfit,
           totalExpense: monthExpenseAmount,
+          totalCommission: monthlyTotalCommissions,
         };
       }
 
@@ -234,6 +242,7 @@ function ReportsContent() {
           Revenue: totalMonthAmount[`month ${monthNumber}`] || 0,
           Profit: totalMonthProfit[`month ${monthNumber}`] || 0,
           Expenses: totalMonthExpense[`month ${monthNumber}`] || 0,
+          Commissions: totalMonthCommission[`month ${monthNumber}`] || 0,
         };
       });
 
@@ -282,10 +291,10 @@ function ReportsContent() {
             </Divider>
 
             <BarChart
-              width={1100}
+              width={1150}
               height={400}
               data={dayData}
-              margin={{ left: 40, right: 5 }}
+              margin={{ left: 38, right: 1 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
@@ -331,6 +340,16 @@ function ReportsContent() {
                     width={5}
                     height={entry.Expenses}
                     fill="red"
+                  />
+                ))}
+              </Bar>
+              <Bar dataKey="Commissions" fill="#f0b30f">
+                {dayData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Commissions}
+                    fill="#f0b30f"
                   />
                 ))}
               </Bar>
@@ -384,7 +403,6 @@ function ReportsContent() {
                   `Ksh.${value.toLocaleString()}`
                 }
               />
-
               <Bar dataKey="Revenue" fill="green">
                 {monthData.map((entry, index) => (
                   <Rectangle
@@ -412,6 +430,16 @@ function ReportsContent() {
                     width={5}
                     height={entry.Expenses}
                     fill="#82ca9d"
+                  />
+                ))}
+              </Bar>{" "}
+              <Bar dataKey="Commissions" fill="#f0b30f">
+                {dayData.map((entry, index) => (
+                  <Rectangle
+                    key={`bar-${index}`}
+                    width={5}
+                    height={entry.Commissions}
+                    fill="#f0b30f"
                   />
                 ))}
               </Bar>
