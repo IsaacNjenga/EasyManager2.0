@@ -273,7 +273,7 @@ function SalesContent() {
               variant="solid"
               style={{ marginBottom: "15px" }}
             >
-              <Link to="/add-sale">Add new item</Link>
+              <Link to="/add-sale">Make a Sale</Link>
             </Button>
             {groupedSalesByDateSorted.map((date) => (
               <div key={date} style={{ marginBottom: "30px" }}>
