@@ -4,10 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const cloud_name = process.env.CLOUD_NAME;
-const api_key = process.env.CLOUD_KEY;
-const api_secret = process.env.CLOUD_SECRET;
+const api_key = process.env.CLOUD_API_KEY;
+const api_secret = process.env.CLOUD_SECRET_KEY;
+
 // Configure Cloudinary globally
-cloudinary.config({
+cloudinary.v2.config({
   cloud_name: cloud_name,
   api_key: api_key,
   api_secret: api_secret,
