@@ -91,6 +91,6 @@ router.get("/logouts", getLogouts);
 router.post("/logout", logout);
 
 //cloudinary routes
-router.delete("/delete-image", VerifyUser, deleteImage);
+router.delete("/delete-image", deleteImage);
 
 export { router as Router };
