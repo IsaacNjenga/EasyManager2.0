@@ -11,7 +11,7 @@ import UseSalesperson from "../../assets/hooks/salespersonHook";
 function AddSale() {
   const navigate = useNavigate();
   const { products, productsLoading } = useProducts();
-  const {salespersonData,salespersonsLoading} = UseSalesperson()
+  const { salespersonData, salespersonsLoading } = UseSalesperson();
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -246,6 +246,7 @@ function AddSale() {
         filterOption={filterOption}
         customStyles={customStyles}
         confirmLoading={confirmLoading}
+        productsLoading={productsLoading}
       />
     </>
   );

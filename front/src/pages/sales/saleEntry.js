@@ -30,6 +30,7 @@ const SaleEntry = ({
   filterOption,
   customStyles,
   confirmLoading,
+  productsLoading,
 }) => {
   const [form] = Form.useForm();
   const [openDelete, setOpenDelete] = useState(null);
@@ -165,9 +166,10 @@ const SaleEntry = ({
         padding: "20px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
       }}
-    ><Divider variant="dashed" style={{borderColor: '#7cb305'}}>
-    Sale Details
-  </Divider>
+    >
+      <Divider variant="dashed" style={{ borderColor: "#7cb305" }}>
+        Sale Details
+      </Divider>
       <Form variant="outlined" onFinish={handleEnterSale} form={form}>
         <div
           style={{
@@ -202,16 +204,14 @@ const SaleEntry = ({
             options={productOptions}
             onChange={handleProductSelection}
             filterOption={filterOption}
-            placeholder="Type to search..."
+            placeholder={
+              productsLoading
+                ? "Fetching products, please wait..."
+                : "Type to search..."
+            }
             isSearchable={true}
+            isDisabled={productsLoading ? true : false}
           />
-          {/* <Select
-            showSearch
-            options={productOptions}
-            onChange={handleProductSelection}
-            placeholder="Type to search..."
-            style={{ width: "100%" }}
-          /> */}
         </Form.Item>
 
         {saleItems.length > 0 && (
@@ -242,7 +242,7 @@ const SaleEntry = ({
                 }))}
               />
             </Form.Item>
-            <Divider variant="dashed" style={{borderColor: '#7cb305'}}>
+            <Divider variant="dashed" style={{ borderColor: "#7cb305" }}>
               Customer Details
             </Divider>
             <div>
