@@ -1,8 +1,14 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Table, Button, Image, Tag, Popconfirm, message, Carousel } from "antd";
 import useProducts from "../../assets/hooks/productHook";
 import ProductModal from "../../components/productModal";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  ArrowRightOutlined,
+  DeleteOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -166,7 +172,11 @@ function ProductsContent() {
           >
             <EyeOutlined />
           </Button>
-          <Button type="link" title="Edit this item">
+          <Button
+            type="link"
+            title="Edit this item"
+            style={{ color: "purple" }}
+          >
             <Link to={`/update-product/${record._id}`}>
               <EditOutlined />
             </Link>
@@ -188,10 +198,28 @@ function ProductsContent() {
               <DeleteOutlined />
             </Button>
           </Popconfirm>
+          <Button
+            onClick={() => {
+              transferLoading(record);
+            }}
+            type="link"
+            title="Make a transfer"
+            style={{ color: "green" }}
+          >
+            <DoubleRightOutlined />
+          </Button>
         </span>
       ),
     },
   ];
+
+  const transferLoading = (product) => {
+    Swal.fire({
+      icon: "warning",
+      title: "Coming Soon!",
+      text: `We are currently working on this feature. Soon you will be able to make transfers on ${product.description}`,
+    });
+  };
 
   const viewDetails = (product) => {
     setOpenModal(true);
