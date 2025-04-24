@@ -226,28 +226,40 @@ function AddSale() {
 
   return (
     <>
-      {loading && <Loader />}
-      <div style={{ margin: "10px 130px" }}>
-        <Button>
-          <Link to="/sales">Back To Sales</Link>
-        </Button>
+      {loading && <Loader />}{" "}
+      <div
+        style={{
+          padding: "10px 15px",
+          background: "linear-gradient(to left, #2c1469 0%, #f8393b 100%)",
+          height: "100vh",
+        }}
+      >
+        <div
+          style={{
+            margin: "10px 100px",
+          }}
+        >
+          <Button>
+            <Link to="/sales">Back To Sales</Link>
+          </Button>
+        </div>
+        <SaleEntry
+          sale={sale}
+          setSale={setSale}
+          saleItems={saleItems}
+          handleRowChange={handleRowChange}
+          handleEnterSale={handleEnterSale}
+          handleProductSelection={handleProductSelection}
+          removeCurrentRow={removeCurrentRow}
+          productOptions={productOptions}
+          salesName={salespersonData}
+          handleDateChange={handleDateChange}
+          filterOption={filterOption}
+          customStyles={customStyles}
+          confirmLoading={confirmLoading}
+          productsLoading={productsLoading}
+        />
       </div>
-      <SaleEntry
-        sale={sale}
-        setSale={setSale}
-        saleItems={saleItems}
-        handleRowChange={handleRowChange}
-        handleEnterSale={handleEnterSale}
-        handleProductSelection={handleProductSelection}
-        removeCurrentRow={removeCurrentRow}
-        productOptions={productOptions}
-        salesName={salespersonData}
-        handleDateChange={handleDateChange}
-        filterOption={filterOption}
-        customStyles={customStyles}
-        confirmLoading={confirmLoading}
-        productsLoading={productsLoading}
-      />
     </>
   );
 }

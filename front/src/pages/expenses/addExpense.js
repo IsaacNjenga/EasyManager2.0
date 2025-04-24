@@ -84,40 +84,47 @@ function AddExpense() {
 
   return (
     <>
-      {loading && <Loader />}
-      <Button
-        type="primary"
-        style={{ margin: "20px auto", backgroundColor: "red" }}
+      {loading && <Loader />}{" "}
+      <div
+        style={{
+          padding: "10px 15px",
+          background: "linear-gradient(to left, #2c1469 0%, #f8393b 100%)",
+          height: "100vh",
+        }}
       >
-        <Link to="/expenses">Back to Expenses</Link>
-      </Button>
-      <Card
-        title="Add New Expense"
-        style={{ maxWidth: 1100, margin: "20px auto", padding: "20px" }}
-      >
-        <Form onFinish={handleSubmit} form={form} layout="vertical">
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "5px",
-                width: "100%",
-              }}
-            >
-              {" "}
-              <Form.Item
-                label="Date"
-                name="date"
-                rules={[{ required: true, message: "Date is required" }]}
+        <Button
+          type="primary"
+          style={{ margin: "20px auto", backgroundColor: "red" }}
+        >
+          <Link to="/expenses">Back to Expenses</Link>
+        </Button>
+        <Card
+          title="Add New Expense"
+          style={{ maxWidth: 1100, margin: "20px auto", padding: "20px" }}
+        >
+          <Form onFinish={handleSubmit} form={form} layout="vertical">
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "5px",
+                  width: "100%",
+                }}
               >
-                <DatePicker
-                  needConfirm
-                  style={{ width: "75%" }}
-                  onChange={onDateChange}
-                />
-              </Form.Item>
-              {/* <Form.Item
+                {" "}
+                <Form.Item
+                  label="Date"
+                  name="date"
+                  rules={[{ required: true, message: "Date is required" }]}
+                >
+                  <DatePicker
+                    needConfirm
+                    style={{ width: "75%" }}
+                    onChange={onDateChange}
+                  />
+                </Form.Item>
+                {/* <Form.Item
                 label="Expense Number"
                 name="number"
                 rules={[{ required: true, message: "No is required" }]}
@@ -128,74 +135,79 @@ function AddExpense() {
                   style={{ width: "75%" }}
                 />
               </Form.Item>{" "} */}
-              <Form.Item
-                label="Expense Description"
-                name="description"
-                rules={[{ required: true, message: "Description is required" }]}
+                <Form.Item
+                  label="Expense Description"
+                  name="description"
+                  rules={[
+                    { required: true, message: "Description is required" },
+                  ]}
+                >
+                  <Input
+                    onChange={(e) =>
+                      handleChange("description", e.target.value)
+                    }
+                    value={values.description}
+                    style={{ width: "75%" }}
+                  />
+                </Form.Item>{" "}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "5px",
+                  width: "100%",
+                }}
               >
-                <Input
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  value={values.description}
-                  style={{ width: "75%" }}
-                />
-              </Form.Item>{" "}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "5px",
-                width: "100%",
-              }}
-            >
-              <Form.Item
-                label="Expense Amount"
-                name="cost"
-                rules={[{ required: true, message: "Cost is required" }]}
-              >
-                <InputNumber
-                  onChange={(value) => handleChange("cost", value)}
-                  value={values.cost}
-                  style={{ width: "75%" }}
-                  prefix="KSh."
-                />
-              </Form.Item>
-              <Form.Item
-                label="Category"
-                name="category"
-                rules={[{ required: true, message: "Category is required" }]}
-                style={{ width: "75%" }}
-              >
-                <Select
+                <Form.Item
+                  label="Expense Amount"
+                  name="cost"
+                  rules={[{ required: true, message: "Cost is required" }]}
+                >
+                  <InputNumber
+                    onChange={(value) => handleChange("cost", value)}
+                    value={values.cost}
+                    style={{ width: "75%" }}
+                    prefix="KSh."
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Category"
                   name="category"
-                  onChange={(value) => handleChange("category", value)}
-                  value={values.category}
-                  options={categoryItems.map((item) => ({
-                    label: `${item.label}`,
-                    value: item.label,
-                  }))}
-                />
-              </Form.Item>
+                  rules={[{ required: true, message: "Category is required" }]}
+                  style={{ width: "75%" }}
+                >
+                  <Select
+                    name="category"
+                    onChange={(value) => handleChange("category", value)}
+                    value={values.category}
+                    options={categoryItems.map((item) => ({
+                      label: `${item.label}`,
+                      value: item.label,
+                    }))}
+                  />
+                </Form.Item>
+              </div>
             </div>
-          </div>
-          <div style={{ display: "flex", gap: "20px" }}>
-            <Button
-              htmlType="submit"
-              type="primary"
-              style={{ backgroundColor: "green" }}
-            >
-              Submit
-            </Button>
-            <Button
-              onClick={setClear}
-              type="primary"
-              style={{ backgroundColor: "red" }}
-            >
-              Clear All
-            </Button>
-          </div>
-        </Form>
-      </Card>
+            <div style={{ display: "flex", gap: "20px" }}>
+              <Button
+                htmlType="submit"
+                type="primary"
+                style={{ backgroundColor: "green" }}
+              >
+                Submit
+              </Button>
+              <Button
+                onClick={setClear}
+                type="primary"
+                style={{ backgroundColor: "red" }}
+              >
+                Clear All
+              </Button>
+            </div>
+          </Form>
+        </Card>
+      </div>
     </>
   );
 }

@@ -153,10 +153,10 @@ function Navbar() {
           onClick={handleClick}
           items={menuItems.map(({ key, icon, label, path, onClick }) => ({
             key: path || key,
-            icon: React.createElement(icon, { style: { fontSize: "1.6rem" } }),
+            icon: React.createElement(icon, { style: { fontSize: "1.9rem" } }),
             label: path ? <Link to={path}>{label}</Link> : label,
             onClick,
-            style: { fontSize: "20px", padding: "5px", margin: "15px 6px" },
+            style: { fontSize: "22px", padding: "3px", margin: "15px 6px" },
           }))}
         />
       </Sider>
@@ -164,14 +164,14 @@ function Navbar() {
         <Content style={{ margin: "26px 16px", overflow: "auto" }}>
           <div
             style={{
-              padding: 24,
+              padding: 10,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
               minHeight: "100vh",
               fontSize: "18px",
             }}
           >
-            <Outlet /> {/* THIS IS WHERE THE PAGE CONTENT WILL LOAD */}
+            <Outlet /> 
           </div>
         </Content>
       </Layout>

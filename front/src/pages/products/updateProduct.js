@@ -13,6 +13,7 @@ function UpdateProduct() {
   const navigate = useNavigate();
   const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [imagePublicIds, setImagePublicIds] = useState([]);
   const [value, setValue] = useState({
@@ -187,7 +188,8 @@ function UpdateProduct() {
 
   const handleSubmit = async () => {
     const productData = { ...value, image: imageUrls, imageId: imagePublicIds };
-    console.log(productData);
+    setSubmitLoading(true);
+    // console.log(productData);
     try {
       const token = localStorage.getItem("token");
       await axios
@@ -222,6 +224,8 @@ function UpdateProduct() {
         title: "Product could not be updated",
         text: "Refresh and try again",
       });
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
@@ -257,222 +261,231 @@ function UpdateProduct() {
   return (
     <>
       {loading && <Loader />}
-      <Button>
-        <Link to="/products">Back To Inventory</Link>
-      </Button>
-      <Card
-        title="Add New Product"
-        style={{ maxWidth: 1100, margin: "20px auto", padding: "20px" }}
+      <div
+        style={{
+          padding: "10px 15px",
+          background: "linear-gradient(to left, #2c1469 20%, #f8393b 100%)",
+        }}
       >
-        <Form
-          layout="vertical"
-          onFinish={handleSubmit}
-          form={form}
-          variant="outlined"
-          initialValues={value}
+        <Button>
+          <Link to="/products">Back To Inventory</Link>
+        </Button>
+        <Card
+          title="Update this Product"
+          style={{ maxWidth: 1100, margin: "20px auto", padding: "20px" }}
         >
-          <Row gutter={24}>
-            {/* Image Upload Section */}
-            <Col xs={24} md={10}>
-              <Form.Item label="Upload Images (Multiple)">
-                <div>
-                  <label
-                    htmlFor="file-upload"
-                    className="custom-upload-button"
-                  ></label>
-                  <input
-                    id="file-upload"
-                    accept="image/*"
-                    type="file"
-                    multiple
-                    onChange={handleImageUpload}
-                  />
-                </div>
-                {imageUrls.length > 0 ? (
-                  <div
-                    className="image-preview-container"
-                    style={{ marginTop: 10 }}
-                  >
-                    {imageUrls.map((url, index) => (
-                      <div
-                        key={imagePublicIds[index]}
-                        style={{
-                          position: "relative",
-                          display: "inline-block",
-                          marginRight: 8,
-                        }}
-                      >
-                        <Button
-                          type="text"
-                          shape="circle"
-                          icon={<DeleteOutlined />}
-                          onClick={(e) =>
-                            deletePicture(e, imagePublicIds[index])
-                          }
-                          style={{
-                            position: "absolute",
-                            top: -10,
-                            right: -10,
-                            zIndex: 1,
-                            background: "white",
-                          }}
-                        />
-                        <Image
-                          src={url}
-                          alt="uploaded"
-                          style={{
-                            width: 150,
-                            height: 150,
-                            objectFit: "cover",
-                            borderRadius: 5,
-                            margin: "10px",
-                          }}
-                        />
-                      </div>
-                    ))}
+          <Form
+            layout="vertical"
+            onFinish={handleSubmit}
+            form={form}
+            variant="outlined"
+            initialValues={value}
+          >
+            <Row gutter={24}>
+              {/* Image Upload Section */}
+              <Col xs={24} md={10}>
+                <Form.Item label="Upload Images (Multiple)">
+                  <div>
+                    <label
+                      htmlFor="file-upload"
+                      className="custom-upload-button"
+                    ></label>
+                    <input
+                      id="file-upload"
+                      accept="image/*"
+                      type="file"
+                      multiple
+                      onChange={handleImageUpload}
+                    />
                   </div>
-                ) : (
-                  <p
-                    className="no-image-text"
-                    style={{ marginTop: 10, color: "#999" }}
+                  {imageUrls.length > 0 ? (
+                    <div
+                      className="image-preview-container"
+                      style={{ marginTop: 10 }}
+                    >
+                      {imageUrls.map((url, index) => (
+                        <div
+                          key={imagePublicIds[index]}
+                          style={{
+                            position: "relative",
+                            display: "inline-block",
+                            marginRight: 8,
+                          }}
+                        >
+                          <Button
+                            type="text"
+                            shape="circle"
+                            icon={<DeleteOutlined />}
+                            onClick={(e) =>
+                              deletePicture(e, imagePublicIds[index])
+                            }
+                            style={{
+                              position: "absolute",
+                              top: -10,
+                              right: -10,
+                              zIndex: 1,
+                              background: "white",
+                            }}
+                          />
+                          <Image
+                            src={url}
+                            alt="uploaded"
+                            style={{
+                              width: 150,
+                              height: 150,
+                              objectFit: "cover",
+                              borderRadius: 5,
+                              margin: "10px",
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p
+                      className="no-image-text"
+                      style={{ marginTop: 10, color: "#999" }}
+                    >
+                      No images uploaded.
+                    </p>
+                  )}
+                </Form.Item>
+              </Col>
+
+              {/* Product Information Section */}
+              <Col xs={24} md={14}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(200px, 1fr))",
+                    gap: "16px",
+                  }}
+                >
+                  <Form.Item
+                    label="Product No."
+                    name="number"
+                    rules={[{ required: true, message: "No is required" }]}
                   >
-                    No images uploaded.
-                  </p>
-                )}
-              </Form.Item>
-            </Col>
-
-            {/* Product Information Section */}
-            <Col xs={24} md={14}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                  gap: "16px",
-                }}
-              >
+                    <InputNumber
+                      min={1}
+                      style={{ width: "75%" }}
+                      onChange={(val) => handleChange("number", val)}
+                      value={value.number}
+                    />
+                  </Form.Item>{" "}
+                  <Form.Item label="Product Code" name="code">
+                    <Input
+                      style={{ width: "75%" }}
+                      onChange={(e) =>
+                        handleChange("code", e.target.value.toUpperCase())
+                      }
+                      value={value.code}
+                    />
+                  </Form.Item>
+                </div>
                 <Form.Item
-                  label="Product No."
-                  name="number"
-                  rules={[{ required: true, message: "No is required" }]}
+                  label="Product Name"
+                  name="description"
+                  rules={[
+                    { required: true, message: "Product name is required" },
+                  ]}
                 >
-                  <InputNumber
-                    min={1}
-                    style={{ width: "75%" }}
-                    onChange={(val) => handleChange("number", val)}
-                    value={value.number}
-                  />
-                </Form.Item>{" "}
-                <Form.Item label="Product Code" name="code">
                   <Input
-                    style={{ width: "75%" }}
                     onChange={(e) =>
-                      handleChange("code", e.target.value.toUpperCase())
+                      handleChange("description", e.target.value.toUpperCase())
                     }
-                    value={value.code}
+                    value={value.description}
                   />
                 </Form.Item>
-              </div>
-              <Form.Item
-                label="Product Name"
-                name="description"
-                rules={[
-                  { required: true, message: "Product name is required" },
-                ]}
-              >
-                <Input
-                  onChange={(e) =>
-                    handleChange("description", e.target.value.toUpperCase())
-                  }
-                  value={value.description}
-                />
-              </Form.Item>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                  gap: "16px",
-                }}
-              >
-                <Form.Item label="Colour" name="colour">
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(200px, 1fr))",
+                    gap: "16px",
+                  }}
+                >
+                  <Form.Item label="Colour" name="colour">
+                    <Input
+                      style={{ width: "75%" }}
+                      onChange={(e) =>
+                        handleChange("colour", e.target.value.toUpperCase())
+                      }
+                      value={value.colour}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Selling Price (KSh.)"
+                    name="price"
+                    rules={[{ required: true, message: "Price is required" }]}
+                  >
+                    <InputNumber
+                      style={{ width: "75%" }}
+                      min={0}
+                      onChange={(val) => handleChange("price", val)}
+                      value={value.price}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Quantity"
+                    name="quantity"
+                    rules={[{ required: true, message: "Qty is required" }]}
+                  >
+                    <InputNumber
+                      min={0}
+                      style={{ width: "75%" }}
+                      onChange={(val) => handleChange("quantity", val)}
+                      value={value.quantity}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Batch No." name="bnumber">
+                    <Input
+                      style={{ width: "75%" }}
+                      onChange={(e) => handleChange("bnumber", e.target.value)}
+                      value={value.bnumber}
+                    />
+                  </Form.Item>
+                </div>{" "}
+                <Form.Item label="Location" name="location">
                   <Input
-                    style={{ width: "75%" }}
                     onChange={(e) =>
-                      handleChange("colour", e.target.value.toUpperCase())
+                      handleChange("location", e.target.value.toUpperCase())
                     }
-                    value={value.colour}
+                    value={value.location}
                   />
                 </Form.Item>
+                <Form.Item label="Summary" name="summary">
+                  <TextArea
+                    rows={3}
+                    onChange={(e) =>
+                      handleChange("summary", e.target.value.toUpperCase())
+                    }
+                    value={value.summary}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-                <Form.Item
-                  label="Selling Price (KSh.)"
-                  name="price"
-                  rules={[{ required: true, message: "Price is required" }]}
-                >
-                  <InputNumber
-                    style={{ width: "75%" }}
-                    min={0}
-                    onChange={(val) => handleChange("price", val)}
-                    value={value.price}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label="Quantity"
-                  name="quantity"
-                  rules={[{ required: true, message: "Qty is required" }]}
-                >
-                  <InputNumber
-                    min={0}
-                    style={{ width: "75%" }}
-                    onChange={(val) => handleChange("quantity", val)}
-                    value={value.quantity}
-                  />
-                </Form.Item>
-                <Form.Item label="Batch No." name="bnumber">
-                  <Input
-                    style={{ width: "75%" }}
-                    onChange={(e) => handleChange("bnumber", e.target.value)}
-                    value={value.bnumber}
-                  />
-                </Form.Item>
-              </div>{" "}
-              <Form.Item label="Location" name="location">
-                <Input
-                  onChange={(e) =>
-                    handleChange("location", e.target.value.toUpperCase())
-                  }
-                  value={value.location}
-                />
-              </Form.Item>
-              <Form.Item label="Summary" name="summary">
-                <TextArea
-                  rows={3}
-                  onChange={(e) =>
-                    handleChange("summary", e.target.value.toUpperCase())
-                  }
-                  value={value.summary}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          {/* Form Buttons */}
-          <Form.Item style={{ textAlign: "center", marginTop: 20 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              style={{ marginRight: 10 }}
-            >
-              Submit
-            </Button>
-            <Button onClick={clearForm} danger>
-              Clear
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+            {/* Form Buttons */}
+            <Form.Item style={{ textAlign: "center", marginTop: 20 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={submitLoading}
+                style={{ marginRight: 10 }}
+              >
+                {submitLoading ? "Updating" : "Update"}
+              </Button>
+              <Button onClick={clearForm} danger>
+                Clear
+              </Button>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
     </>
   );
 }
