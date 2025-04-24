@@ -45,6 +45,7 @@ function CustomersContent() {
       title: "Product",
       dataIndex: "description",
       key: "description",
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "Colour",
@@ -88,6 +89,7 @@ function CustomersContent() {
       title: "Customer Name",
       dataIndex: "customerName",
       key: "customerName",
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "Customer Phone",

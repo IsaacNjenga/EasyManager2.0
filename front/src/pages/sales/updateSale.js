@@ -243,7 +243,9 @@ function UpdateSale() {
                 ]}
               >
                 <Input
-                  onChange={(e) => handleChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("description", e.target.value.toUpperCase())
+                  }
                   value={value.description}
                 />
               </Form.Item>
@@ -264,7 +266,9 @@ function UpdateSale() {
                 <Form.Item label="Colour" name="colour">
                   <Input
                     style={{ width: "75%" }}
-                    onChange={(e) => handleChange("colour", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("colour", e.target.value.toUpperCase())
+                    }
                     value={value.colour}
                   />
                 </Form.Item>
@@ -331,7 +335,7 @@ function UpdateSale() {
                     style={{ width: "75%" }}
                     min={0}
                     onChange={(val) => handleChange("price", val)}
-                    value={value.customerName}
+                    value={value.customerName.toUpperCase()}
                   />
                 </Form.Item>{" "}
                 <Form.Item

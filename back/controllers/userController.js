@@ -75,6 +75,7 @@ const Login = async (req, res) => {
 const Auth = (req, res) => {
   return res.status(201).json({ success: true, user: { ...req.user._doc } });
 };
+
 const credentialsChange = async (req, res) => {
   const { newPassword, number } = req.body;
 

@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Table, Button, Image, Tag, Popconfirm, message, Carousel } from "antd";
-//import { ProductData } from "../../assets/data/productsData";
 import useProducts from "../../assets/hooks/productHook";
 import ProductModal from "../../components/productModal";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Search from "../../components/search";
 import { Link } from "react-router-dom";
-//import Loader from "../../components/loader";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -81,6 +79,7 @@ function ProductsContent() {
       key: "description",
       sorter: (a, b) => a.description.length - b.description.length,
       defaultSortOrder: "descend",
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "Colour",
@@ -150,6 +149,7 @@ function ProductsContent() {
         },
       ],
       onFilter: (value, record) => record.location.indexOf(value) === 0,
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "",

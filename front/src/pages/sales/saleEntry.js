@@ -251,7 +251,10 @@ const SaleEntry = ({
                   style={{ width: "75%" }}
                   value={sale.customerName}
                   onChange={(e) =>
-                    handleSaleChange("customerName", e.target.value)
+                    handleSaleChange(
+                      "customerName",
+                      e.target.value.toUpperCase()
+                    )
                   }
                 />
               </Form.Item>
@@ -269,7 +272,10 @@ const SaleEntry = ({
                   style={{ width: "75%" }}
                   value={sale.customerEmail}
                   onChange={(e) =>
-                    handleSaleChange("customerEmail", e.target.value)
+                    handleSaleChange(
+                      "customerEmail",
+                      e.target.value
+                    )
                   }
                 />
               </Form.Item>

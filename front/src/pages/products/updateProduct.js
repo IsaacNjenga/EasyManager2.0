@@ -366,7 +366,9 @@ function UpdateProduct() {
                 <Form.Item label="Product Code" name="code">
                   <Input
                     style={{ width: "75%" }}
-                    onChange={(e) => handleChange("code", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("code", e.target.value.toUpperCase())
+                    }
                     value={value.code}
                   />
                 </Form.Item>
@@ -379,7 +381,9 @@ function UpdateProduct() {
                 ]}
               >
                 <Input
-                  onChange={(e) => handleChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("description", e.target.value.toUpperCase())
+                  }
                   value={value.description}
                 />
               </Form.Item>
@@ -393,7 +397,9 @@ function UpdateProduct() {
                 <Form.Item label="Colour" name="colour">
                   <Input
                     style={{ width: "75%" }}
-                    onChange={(e) => handleChange("colour", e.target.value)}
+                    onChange={(e) =>
+                      handleChange("colour", e.target.value.toUpperCase())
+                    }
                     value={value.colour}
                   />
                 </Form.Item>
@@ -433,14 +439,18 @@ function UpdateProduct() {
               </div>{" "}
               <Form.Item label="Location" name="location">
                 <Input
-                  onChange={(e) => handleChange("location", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("location", e.target.value.toUpperCase())
+                  }
                   value={value.location}
                 />
               </Form.Item>
               <Form.Item label="Summary" name="summary">
                 <TextArea
                   rows={3}
-                  onChange={(e) => handleChange("summary", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("summary", e.target.value.toUpperCase())
+                  }
                   value={value.summary}
                 />
               </Form.Item>
@@ -452,6 +462,7 @@ function UpdateProduct() {
             <Button
               type="primary"
               htmlType="submit"
+              loading={loading}
               style={{ marginRight: 10 }}
             >
               Submit

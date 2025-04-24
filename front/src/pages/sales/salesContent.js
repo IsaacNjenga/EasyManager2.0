@@ -96,6 +96,7 @@ function SalesContent() {
       title: "Product",
       dataIndex: "description",
       key: "description",
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "Colour",
@@ -171,6 +172,7 @@ function SalesContent() {
       title: "Sold By",
       dataIndex: "saleperson",
       key: "saleperson",
+      render: (text) => text.toUpperCase(),
     },
     {
       title: "",
