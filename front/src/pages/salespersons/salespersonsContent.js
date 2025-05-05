@@ -51,11 +51,13 @@ function SalespersonsContent() {
       title: "First Name",
       dataIndex: "firstname",
       key: "firstname",
+      render: (text) => text?.toUpperCase(),
     },
     {
       title: "Last Name",
       dataIndex: "lastname",
       key: "lastname",
+      render: (text) => text?.toUpperCase(),
     },
     {
       title: "Number",

@@ -58,7 +58,7 @@ const ProductModal = ({ openModal, setOpenModal, modalContent, loading }) => {
                 <strong>Location:</strong> {modalContent.location.toUpperCase()}
               </p>
               <p>
-                <strong>Batch No.:</strong> {modalContent.bnumber}
+                <strong>Batch No.:</strong> {modalContent.bnumber}A
               </p>
               <p>
                 <strong>Summary:</strong> {modalContent.summary.toUpperCase()}

@@ -3,7 +3,6 @@ import { Table, Button, Image, Tag, Popconfirm, message, Carousel } from "antd";
 import useProducts from "../../assets/hooks/productHook";
 import ProductModal from "../../components/productModal";
 import {
-  ArrowRightOutlined,
   DeleteOutlined,
   DoubleRightOutlined,
   EditOutlined,
@@ -13,10 +12,12 @@ import Search from "../../components/search";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import TransferModal from "../../components/transferModal";
 
 function ProductsContent() {
   const { products, productsLoading, refresh } = useProducts();
   const [openModal, setOpenModal] = useState(false);
+  const [openTransferModal, setOpenTransferModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalContent, setModalContent] = useState(null);
   const [openDelete, setOpenDelete] = useState(null);
@@ -85,7 +86,7 @@ function ProductsContent() {
       key: "description",
       sorter: (a, b) => a.description.length - b.description.length,
       defaultSortOrder: "descend",
-      render: (text) => text.toUpperCase(),
+      render: (text) => text?.toUpperCase(),
     },
     {
       title: "Colour",
@@ -155,7 +156,7 @@ function ProductsContent() {
         },
       ],
       onFilter: (value, record) => record.location.indexOf(value) === 0,
-      render: (text) => text.toUpperCase(),
+      render: (text) => text?.toUpperCase(),
     },
     {
       title: "",
@@ -214,6 +215,12 @@ function ProductsContent() {
   ];
 
   const transferLoading = (product) => {
+    // setOpenTransferModal(true);
+    // setLoading(true);
+    // setModalContent(product);
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 1000);
     Swal.fire({
       icon: "warning",
       title: "Coming Soon!",
@@ -296,6 +303,12 @@ function ProductsContent() {
         <ProductModal
           openModal={openModal}
           setOpenModal={setOpenModal}
+          modalContent={modalContent}
+          loading={loading}
+        />
+        <TransferModal
+          openTransferModal={openTransferModal}
+          setOpenTransferModal={setOpenTransferModal}
           modalContent={modalContent}
           loading={loading}
         />
