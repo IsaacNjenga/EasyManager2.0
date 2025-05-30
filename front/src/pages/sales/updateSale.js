@@ -326,39 +326,27 @@ function UpdateSale() {
                 }}
               >
                 {" "}
-                <Form.Item
-                  label="Customer Name"
-                  name="customerName"
-                  rules={[{ required: true, message: "Price is required" }]}
-                >
+                <Form.Item label="Customer Name" name="customerName">
                   <InputNumber
                     style={{ width: "75%" }}
                     min={0}
-                    onChange={(val) => handleChange("price", val)}
+                    onChange={(val) => handleChange("customerName", val)}
                     value={value.customerName.toUpperCase()}
                   />
                 </Form.Item>{" "}
-                <Form.Item
-                  label="Customer Phone"
-                  name="customerPhone"
-                  rules={[{ required: true, message: "Price is required" }]}
-                >
+                <Form.Item label="Customer Phone" name="customerPhone">
                   <InputNumber
                     style={{ width: "75%" }}
                     min={0}
-                    onChange={(val) => handleChange("price", val)}
+                    onChange={(val) => handleChange("customerPhone", val)}
                     value={value.customerPhone}
                   />
                 </Form.Item>{" "}
-                <Form.Item
-                  label="Customer Email Address"
-                  name="customerEmail"
-                  rules={[{ required: true, message: "Price is required" }]}
-                >
+                <Form.Item label="Customer Email Address" name="customerEmail">
                   <InputNumber
                     style={{ width: "75%" }}
                     min={0}
-                    onChange={(val) => handleChange("price", val)}
+                    onChange={(val) => handleChange("customerEmail", val)}
                     value={value.customerEmail}
                   />
                 </Form.Item>
