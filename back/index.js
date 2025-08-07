@@ -8,12 +8,23 @@ dotenv.config();
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://easymanager-gilt.vercel.app"],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (
+      ["http://localhost:3000", "https://easymanager-gilt.vercel.app"].includes(origin)
+    ) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 200,
 };
+
 
 app.use(cors(corsOptions));
 //middleware to parse json bodies from the front end

@@ -220,7 +220,7 @@ function ProductsContent() {
     // setModalContent(product);
     // setTimeout(() => {
     //   setLoading(false);
-    // }, 1000);
+    // }, 100);
     Swal.fire({
       icon: "warning",
       title: "Coming Soon!",
