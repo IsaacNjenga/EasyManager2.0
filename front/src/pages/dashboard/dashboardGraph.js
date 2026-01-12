@@ -67,7 +67,7 @@ function DashboardGraph() {
           month: "short",
         });
         const weekday = dayStartDate.toLocaleString("en-UK", {
-          weekday: "long",
+          weekday: "short",
         });
 
         const dayName = `${weekday}, ${dayOfMonth}${suffix} ${month}`;
@@ -126,7 +126,7 @@ function DashboardGraph() {
     if (!salesLoading && !expensesLoading) {
       weekGraph();
     }
-  //eslint-disable-next-line
+    //eslint-disable-next-line
   }, [salesData, expenses]);
 
   return (
@@ -186,16 +186,15 @@ function DashboardGraph() {
           <Divider variant="solid">Weekly Report</Divider>
 
           <BarChart
-            width={1150}
+            width={900}
             height={400}
             data={weekData}
-            margin={{ left: 38, right: 1 }}
+            margin={{ left: 0, right: 1 }}
           >
             <CartesianGrid strokeDasharray="3 3" /> <XAxis dataKey="name" />
             <YAxis tickFormatter={(value) => `${value.toLocaleString()}`}>
               <Label
-                value="(Ksh)"
-                offset={-20}
+                offset={0}
                 position="insideLeft"
                 style={{ textAnchor: "middle", fontSize: "16px" }}
               />

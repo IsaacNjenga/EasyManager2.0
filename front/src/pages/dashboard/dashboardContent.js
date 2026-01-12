@@ -17,6 +17,7 @@ import {
   Button,
   Table,
   Tabs,
+  Typography,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
@@ -27,6 +28,8 @@ import useSales from "../../assets/hooks/saleHook";
 import useExpenses from "../../assets/hooks/expensesHook";
 import Swal from "sweetalert2";
 import DashboardGraph from "./dashboardGraph";
+
+const { Title } = Typography;
 
 function DashboardContent() {
   const { salesData, salesLoading } = useSales();
@@ -125,6 +128,7 @@ function DashboardContent() {
     } finally {
       setLoading(false);
     }
+    //eslint-disable-next-line
   }, [selectedPeriod, salesData, expenses, date]);
 
   const lastMonthStarting = new Date();
@@ -181,7 +185,7 @@ function DashboardContent() {
         <Image
           src={image}
           alt="N/a"
-          style={{ width: 100, height: 100, borderRadius: "8px" }}
+          style={{ width: 80, height: 80, borderRadius: "8px" }}
         />
       ),
     },
@@ -399,7 +403,7 @@ function DashboardContent() {
   const SalesContent = ({ filteredSales, selectedPeriod }) => {
     return (
       <>
-        <h3>
+        <Title level={4}>
           {selectedPeriod === "lastWeek"
             ? `${format(new Date(lastWeekStarting), "dd/MM/yyyy")} - ${format(
                 new Date(lastWeekEnding),
@@ -415,7 +419,7 @@ function DashboardContent() {
             : selectedPeriod === "randomDay"
             ? `${format(new Date(day), "EEEE, do MMMM yyyy")}`
             : format(new Date(currentDateTime), "EEEE, do MMMM yyyy")}
-        </h3>
+        </Title>
         <Table
           dataSource={filteredSales}
           columns={columns}
@@ -611,12 +615,12 @@ function DashboardContent() {
       </div>
       <div
         style={{
-          margin: "25px 10px",
+          margin: "25px 0px",
           width: "100%",
-          justifyContent: "center", // Centers horizontally
-          alignItems: "center", // Centers vertically
-          padding: "15px 1px",
-          textAlign: "center", // Ensures content inside is centered
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "15px",
+          textAlign: "center",
         }}
       >
         <Row gutter={30} justify="center">

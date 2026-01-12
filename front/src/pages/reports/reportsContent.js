@@ -1,5 +1,5 @@
 import { Button, Card, Divider } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Loader from "../../components/loader";
 import useSales from "../../assets/hooks/saleHook";
 import useExpenses from "../../assets/hooks/expensesHook";
@@ -14,6 +14,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { CalendarOutlined, StockOutlined } from "@ant-design/icons";
 
 function ReportsContent() {
   const { salesData, salesLoading } = useSales();
@@ -170,18 +171,18 @@ function ReportsContent() {
       const year = newYear.getFullYear();
       const monthsData = {};
       const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "JAN",
+        "FEB",
+        "MAR",
+        "APR",
+        "MAY",
+        "JUN",
+        "JUL",
+        "AUG",
+        "SEP",
+        "OCT",
+        "NOV",
+        "DEC",
       ];
       const totalMonthAmount = {};
       const totalMonthProfit = {};
@@ -261,194 +262,371 @@ function ReportsContent() {
       {salesLoading || expensesLoading ? (
         <Loader />
       ) : (
-        <>
-          <Card title="Monthly Sales & Expenses Report">
-            <div style={{ display: "flex", gap: "10px" }}>
+        <div style={styles.container}>
+          <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .chart-container {
+          background: #f8f9fa;
+          border-radius: 12px;
+          padding: 20px;
+          margin-top: 16px;
+        }
+        .ant-card {
+          animation: fadeIn 0.5s ease-out;
+        }
+      `}</style>
+
+          <div style={styles.header}>
+            <h1 style={styles.title}>Financial Reports</h1>
+          </div>
+
+          <Card
+            title={
+              <span style={styles.cardTitle}>
+                <StockOutlined style={styles.cardIcon} />
+                Monthly Sales & Expenses Report
+              </span>
+            }
+            style={styles.card}
+          >
+            <div style={styles.buttonGroup}>
               <Button
                 onClick={() => monthlyReport("prevMonth")}
-                style={{ background: "red", color: "white" }}
+                type="primary"
+                danger
+                size="large"
+                style={styles.button}
               >
-                Last Month
+                ← Previous Month
               </Button>
               <Button
                 onClick={() => monthlyReport("currentMonth")}
-                style={{ background: "green", color: "white" }}
+                type="primary"
+                size="large"
+                style={{
+                  ...styles.button,
+                  background: "#52c41a",
+                  borderColor: "#52c41a",
+                }}
               >
                 This Month
               </Button>
               <Button
                 onClick={() => monthlyReport("nextMonth")}
-                style={{ background: "#00152a", color: "white" }}
+                type="primary"
+                size="large"
+                style={{
+                  ...styles.button,
+                  background: "#00152a",
+                  borderColor: "#00152a",
+                }}
               >
-                Next Month
+                Next Month →
               </Button>
             </div>
-            <Divider variant="solid">
-              {currentMonth.toLocaleDateString("en-UK", {
-                month: "long",
-                year: "numeric",
-              })}
+
+            <Divider style={styles.divider}>
+              <span style={styles.dividerText}>
+                <CalendarOutlined style={{ marginRight: "8px" }} />
+                {currentMonth.toLocaleDateString("en-UK", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
             </Divider>
 
-            <BarChart
-              width={1150}
-              height={400}
-              data={dayData}
-              margin={{ left: 38, right: 1 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={(value) => `${value.toLocaleString()}`}>
-                <Label
-                  value="(Ksh)"
-                  offset={-20}
-                  position="insideLeft"
-                  style={{ textAnchor: "middle", fontSize: "16px" }}
+            <div className="chart-container">
+              <BarChart
+                width={900}
+                height={400}
+                data={dayData}
+                margin={{ left: 0, right: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis
+                  tickFormatter={(value) => `${value.toLocaleString()}`}
+                  stroke="#666"
+                >
+                  <Label
+                    offset={0}
+                    position="insideLeft"
+                    style={{
+                      textAnchor: "left",
+                      fontSize: "10px",
+                      fill: "#666",
+                    }}
+                  />
+                </YAxis>
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Tooltip
+                  formatter={(value, name, props) =>
+                    `Ksh.${value.toLocaleString()}`
+                  }
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #d9d9d9",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
                 />
-              </YAxis>
-              <Legend />
-              <Tooltip
-                formatter={(value, name, props) =>
-                  `Ksh.${value.toLocaleString()}`
-                }
-              />
-
-              <Bar dataKey="Revenue" fill="green">
-                {monthData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Revenue}
-                    fill="#8884d8"
-                  />
-                ))}
-              </Bar>
-              <Bar dataKey="Profit" fill="blue">
-                {dayData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Profit}
-                    fill="#82ca9d"
-                  />
-                ))}
-              </Bar>
-              <Bar dataKey="Expenses" fill="red">
-                {dayData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Expenses}
-                    fill="red"
-                  />
-                ))}
-              </Bar>
-              <Bar dataKey="Commissions" fill="#f0b30f">
-                {dayData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Commissions}
-                    fill="#f0b30f"
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+                <Bar dataKey="Revenue" fill="#1890ff" radius={[8, 8, 0, 0]}>
+                  {dayData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Revenue}
+                      fill="#1890ff"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Profit" fill="#52c41a" radius={[8, 8, 0, 0]}>
+                  {dayData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Profit}
+                      fill="#52c41a"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Expenses" fill="#ff4d4f" radius={[8, 8, 0, 0]}>
+                  {dayData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Expenses}
+                      fill="#ff4d4f"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Commissions" fill="#faad14" radius={[8, 8, 0, 0]}>
+                  {dayData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Commissions}
+                      fill="#faad14"
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </div>
           </Card>
-          <Card title="Yearly Sales & Expenses Report">
-            <div style={{ display: "flex", gap: "10px" }}>
+
+          <Card
+            title={
+              <span style={styles.cardTitle}>
+                <StockOutlined style={styles.cardIcon} />
+                Yearly Sales & Expenses Report
+              </span>
+            }
+            style={styles.card}
+          >
+            <div style={styles.buttonGroup}>
               <Button
                 onClick={() => yearlyReport("prevYear")}
-                style={{ background: "red", color: "white" }}
+                type="primary"
+                danger
+                size="large"
+                style={styles.button}
               >
-                Last Year
+                ← Previous Year
               </Button>
               <Button
                 onClick={() => yearlyReport("currentYear")}
-                style={{ background: "green", color: "white" }}
+                type="primary"
+                size="large"
+                style={{
+                  ...styles.button,
+                  background: "#52c41a",
+                  borderColor: "#52c41a",
+                }}
               >
                 This Year
               </Button>
               <Button
                 onClick={() => yearlyReport("nextYear")}
-                style={{ background: "#00152a", color: "white" }}
+                type="primary"
+                size="large"
+                style={{
+                  ...styles.button,
+                  background: "#00152a",
+                  borderColor: "#00152a",
+                }}
               >
-                Next Year
-              </Button>{" "}
+                Next Year →
+              </Button>
             </div>
-            <Divider variant="solid">
-              {currentYear.toLocaleDateString("en-UK", {
-                year: "numeric",
-              })}
+
+            <Divider style={styles.divider}>
+              <span style={styles.dividerText}>
+                <CalendarOutlined style={{ marginRight: "8px" }} />
+                {currentYear.toLocaleDateString("en-UK", {
+                  year: "numeric",
+                })}
+              </span>
             </Divider>
-            <BarChart
-              width={1100}
-              height={400}
-              data={monthData}
-              margin={{ left: 50, right: 10 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis tickFormatter={(value) => `${value.toLocaleString()}`}>
-                <Label
-                  value="(Ksh)"
-                  offset={-30}
-                  position="insideLeft"
-                  style={{ textAnchor: "middle", fontSize: "16px" }}
+
+            <div className="chart-container">
+              <BarChart
+                width={900}
+                height={400}
+                data={monthData}
+                margin={{ left: 0, right: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="name" stroke="#666" />
+                <YAxis
+                  tickFormatter={(value) => `${value.toLocaleString()}`}
+                  stroke="#666"
+                >
+                  <Label
+                    offset={0}
+                    position="insideLeft"
+                    style={{
+                      textAnchor: "middle",
+                      fontSize: "10px",
+                      fill: "#666",
+                    }}
+                  />
+                </YAxis>
+                <Legend wrapperStyle={{ paddingTop: "20px" }} />
+                <Tooltip
+                  formatter={(value, name, props) =>
+                    `Ksh.${value.toLocaleString()}`
+                  }
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #d9d9d9",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
                 />
-              </YAxis>
-              <Legend />
-              <Tooltip
-                formatter={(value, name, props) =>
-                  `Ksh.${value.toLocaleString()}`
-                }
-              />
-              <Bar dataKey="Revenue" fill="green">
-                {monthData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Revenue}
-                    fill="#8884d8"
-                  />
-                ))}
-              </Bar>
-              <Bar dataKey="Profit" fill="blue">
-                {monthData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Profit}
-                    fill="#82ca9d"
-                  />
-                ))}
-              </Bar>
-              <Bar dataKey="Expenses" fill="red">
-                {dayData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Expenses}
-                    fill="#82ca9d"
-                  />
-                ))}
-              </Bar>{" "}
-              <Bar dataKey="Commissions" fill="#f0b30f">
-                {dayData.map((entry, index) => (
-                  <Rectangle
-                    key={`bar-${index}`}
-                    width={5}
-                    height={entry.Commissions}
-                    fill="#f0b30f"
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+                <Bar dataKey="Revenue" fill="#1890ff" radius={[8, 8, 0, 0]}>
+                  {monthData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Revenue}
+                      fill="#1890ff"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Profit" fill="#52c41a" radius={[8, 8, 0, 0]}>
+                  {monthData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Profit}
+                      fill="#52c41a"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Expenses" fill="#ff4d4f" radius={[8, 8, 0, 0]}>
+                  {monthData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Expenses}
+                      fill="#ff4d4f"
+                    />
+                  ))}
+                </Bar>
+                <Bar dataKey="Commissions" fill="#faad14" radius={[8, 8, 0, 0]}>
+                  {monthData.map((entry, index) => (
+                    <Rectangle
+                      key={`bar-${index}`}
+                      width={5}
+                      height={entry.Commissions}
+                      fill="#faad14"
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </div>
           </Card>
-        </>
+        </div>
       )}
     </>
   );
 }
+
+const styles = {
+  container: {
+    minHeight: "100vh",
+    background:
+      "linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 50%, #f9f0ff 100%)",
+    padding: "10px",
+  },
+  header: {
+    textAlign: "center",
+    marginBottom: "40px",
+  },
+  title: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#1f1f1f",
+    marginBottom: "8px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "12px",
+  },
+  titleIcon: {
+    fontSize: "40px",
+    color: "#52c41a",
+  },
+  subtitle: {
+    fontSize: "16px",
+    color: "#666",
+    marginTop: "8px",
+  },
+  card: {
+    borderRadius: "16px",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+    marginBottom: "32px",
+    maxWidth: "1500px",
+    margin: "0 auto 12px",
+  },
+  cardTitle: {
+    fontSize: "22px",
+    fontWeight: "600",
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+  },
+  cardIcon: {
+    fontSize: "24px",
+    color: "#1890ff",
+  },
+  buttonGroup: {
+    display: "flex",
+    gap: "12px",
+    marginBottom: "24px",
+  },
+  button: {
+    fontWeight: "600",
+    height: "42px",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    transition: "all 0.3s ease",
+  },
+  divider: {
+    fontSize: "18px",
+    fontWeight: "600",
+    color: "#333",
+  },
+  dividerText: {
+    background: "#f5f5f5",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    display: "inline-flex",
+    alignItems: "center",
+  },
+};
 
 export default ReportsContent;

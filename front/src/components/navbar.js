@@ -96,7 +96,7 @@ function Navbar() {
           onBreakpoint={(broken) => setCollapsed(broken)}
           width={240}
           style={{
-            padding: collapsed ? 6 : 12,
+            padding: collapsed ? 4 : 8,
             background:
               "linear-gradient(to right, #232527ff 0%, #000000d6 100% )",
             borderColor: "#fff",
@@ -109,7 +109,7 @@ function Navbar() {
             scrollbarGutter: "stable",
           }}
         >
-          <div style={{ margin: "4px 0px" }}>
+          <div style={{ margin: "2px 0px" }}>
             <div
               style={{
                 display: "flex",
@@ -169,14 +169,14 @@ function Navbar() {
                     style: {
                       fontSize: collapsed ? "1.5rem" : "1.9rem",
                       color: "whitesmoke",
-                      margin: "4px 0",
+                      margin: "3px 0",
                     },
                   }),
                   label: path ? (
                     <Link
                       to={path}
                       style={{
-                        fontSize: "18px",
+                        fontSize: "20px",
                         color: "whitesmoke",
                       }}
                     >
@@ -218,7 +218,7 @@ function Navbar() {
                   })),
                   style: {
                     textAlign: "left",
-                    margin: collapsed ? "14px 4.1px" : "19px 4.1px",
+                    margin: collapsed ? "10px" : "16px 2px",
                   },
                 }))}
               />
@@ -281,7 +281,7 @@ function Navbar() {
           <Content
             style={{
               margin: "0px",
-              padding: 20,
+              padding: 10,
               minHeight: "100vh",
               borderRadius: 0,
             }}

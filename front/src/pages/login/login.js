@@ -15,10 +15,12 @@ import Swal from "sweetalert2";
 import ChangePassword from "./changePassword";
 import { useNotification } from "../../contexts/NotificationContext";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
 function Login() {
+  const navigate=useNavigate()
   const [form] = Form.useForm();
   const [values, setValues] = useState({ number: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -58,6 +60,7 @@ function Login() {
       if (success) {
         openNotification("success", "Login successful", "Success!");
         login(user, token);
+        navigate("/");
       } else {
         Swal.fire({
           icon: "error",
