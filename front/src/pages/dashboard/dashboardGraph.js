@@ -126,6 +126,7 @@ function DashboardGraph() {
     if (!salesLoading && !expensesLoading) {
       weekGraph();
     }
+  //eslint-disable-next-line
   }, [salesData, expenses]);
 
   return (

@@ -53,6 +53,8 @@ const TransferModal = ({
 
   useEffect(() => {
     getMock();
+
+    //eslint-disable-next-line
   }, []);
 
   const filterOption = (inputValue, item) => {

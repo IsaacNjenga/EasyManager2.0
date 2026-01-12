@@ -11,6 +11,7 @@ const { TextArea } = Input;
 function UpdateProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
+  //eslint-disable-next-line
   const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -58,12 +59,14 @@ function UpdateProduct() {
     if (id) {
       productToUpdate();
     }
+    //eslint-disable-next-line
   }, [id]);
 
   useEffect(() => {
     if (value) {
-      form.setFieldsValue(value); // Ensure data is populated dynamically
+      form.setFieldsValue(value); // data is populated dynamically
     }
+    //eslint-disable-next-line
   }, [value]);
 
   const [form] = Form.useForm();

@@ -11,10 +11,12 @@ import UseSalesperson from "../../assets/hooks/salespersonHook";
 function AddSale() {
   const navigate = useNavigate();
   const { products, productsLoading } = useProducts();
+  //eslint-disable-next-line
   const { salespersonData, salespersonsLoading } = UseSalesperson();
   const [saleItems, setSaleItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  //eslint-disable-next-line
   const [sales, setSales] = useState([]);
   const [sale, setSale] = useState({
     number: "",

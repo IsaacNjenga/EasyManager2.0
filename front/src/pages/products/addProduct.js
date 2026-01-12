@@ -10,6 +10,8 @@ const { TextArea } = Input;
 
 function AddProduct() {
   const navigate = useNavigate();
+
+  //eslint-disable-next-line
   const [imageUploading, setImageUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);

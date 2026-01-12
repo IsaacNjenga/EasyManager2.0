@@ -1,7 +1,6 @@
 import React from "react";
 import { Table, Tabs } from "antd";
 import useLogs from "../../assets/hooks/logsHook";
-import { format } from "date-fns";
 
 function LogsContent() {
   const { logins, loginsLoading, logoutsLoading, logouts } = useLogs();
