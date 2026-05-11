@@ -171,7 +171,7 @@ function Login() {
                       EasyManager
                     </Title>
                   </Divider>
-                  <Form layout="vertical" onFinish={handleSubmit} form={form}>
+                  <Form layout="vertical" onFinish={handleSubmit} form={form} requiredMark={false}>
                     <Form.Item
                       label={
                         <span style={{ color: "#fff", fontSize: 20 }}>
