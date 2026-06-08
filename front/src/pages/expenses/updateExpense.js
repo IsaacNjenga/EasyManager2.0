@@ -7,6 +7,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 
 function UpdateExpense({ id, setOpen, refresh }) {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     cost: "",
@@ -30,7 +31,7 @@ function UpdateExpense({ id, setOpen, refresh }) {
           date: fetchedExpense.date ? dayjs(fetchedExpense.date) : null,
           category:
             categoryItems.find(
-              (item) => item.value === fetchedExpense.category
+              (item) => item.value === fetchedExpense.category,
             ) || null,
         }));
       }
@@ -60,9 +61,7 @@ function UpdateExpense({ id, setOpen, refresh }) {
         category: values.category ? values.category : null,
       });
     }
-  }, [values]);
-
-  const [form] = Form.useForm();
+  }, [values, form]);
   const handleChange = (name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
   };
@@ -70,7 +69,7 @@ function UpdateExpense({ id, setOpen, refresh }) {
   const onDateChange = (date) => {
     if (date) {
       const localDate = new Date(
-        date.$d.getTime() - date.$d.getTimezoneOffset() * 60000
+        date.$d.getTime() - date.$d.getTimezoneOffset() * 60000,
       );
       const selectedDate = localDate.toISOString();
       setValues((prev) => ({ ...prev, date: selectedDate }));

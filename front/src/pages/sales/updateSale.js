@@ -18,6 +18,7 @@ import Loader from "../../components/loader.js";
 function UpdateSale() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [imagePublicIds, setImagePublicIds] = useState([]);
@@ -73,9 +74,8 @@ function UpdateSale() {
     if (value) {
       form.setFieldsValue(value);
     }
-  }, [value]);
+  }, [value, form]);
 
-  const [form] = Form.useForm();
   const handleChange = (name, val) => {
     setValue((prev) => {
       const newValue = { ...prev, [name]: val };
