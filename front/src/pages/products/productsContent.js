@@ -93,7 +93,7 @@ function ProductsContent() {
       dataIndex: "colour",
       key: "colour",
       render: (colour) =>
-        colour.split("-").map((col) => (
+        colour?.split("-").map((col) => (
           <Tag
             key={col}
             color={col.toLowerCase()}
