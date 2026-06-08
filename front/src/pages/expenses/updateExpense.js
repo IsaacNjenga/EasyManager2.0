@@ -51,6 +51,7 @@ function UpdateExpense({ id, setOpen, refresh }) {
     if (id) {
       fetchExpense();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {

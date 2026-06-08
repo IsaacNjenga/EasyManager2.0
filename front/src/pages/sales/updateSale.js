@@ -68,6 +68,7 @@ function UpdateSale() {
     if (id) {
       saleToUpdate();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
