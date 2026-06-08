@@ -64,6 +64,7 @@ const useSales = (page, limit) => {
 
   useEffect(() => {
     fetchSomeSales(); // Fetch paginated sales
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, refreshKey]);
 
   useEffect(() => {
